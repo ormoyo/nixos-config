@@ -9,7 +9,6 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./syncthing.nix
-      ./containers
     ];
 
   # Bootloader.
@@ -61,13 +60,19 @@
     isNormalUser = true;
     description = "Ormoyo";
     extraGroups = [ "networkmanager" "wheel" ];
+    uid = 1000;
     packages = with pkgs; [];
+  };
+
+  services.docker = {
+    enable = true;
+    dataPath = "/mnt/disk2/docker";
+    user = 1000;
   };
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  nix.settings.allow-unsafe-native-code-during-evaluation = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget

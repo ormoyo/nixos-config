@@ -16,6 +16,7 @@
       specialArgs = {inherit inputs;};
       modules = [
         ./hosts/server/configuration.nix
+        ./modules
         inputs.arion.nixosModules.arion
         # inputs.home-manager.nixosModules.default
       ];
