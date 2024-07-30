@@ -54,12 +54,13 @@ with lib;
 
     virtualisation =
       let
+        enabledContainers = lib.lists.partition (file: cfg.containers."${file}".enable) step2;
         containers = map (file: create 
         { 
           name = "${file}"; 
           user = cfg.containers."${file}".user; 
           path = cfg.containers."${file}".dataDir; 
-        }) step2;
+        }) enabledContainers;
       in
       {
         docker.enable = true;
