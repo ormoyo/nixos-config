@@ -1,6 +1,5 @@
 { pkgs, inputs, config, lib, ... }:
 let
-  DOCKER_PATH = "/mnt/disk2/docker";
   docker = config.virtualisation.oci-containers.backend;
   dockerBin = "${pkgs.${docker}}/bin/${docker}";
   cfg = config.services.docker;
@@ -54,7 +53,7 @@ with lib;
 
     virtualisation =
       let
-        enabledContainers = lib.lists.partition (file: cfg.containers."${file}".enable) step2;
+        enabledContainers = (lib.lists.partition (file: cfg.containers."${file}".enable) step2).right;
         containers = map (file: create 
         { 
           name = "${file}"; 
