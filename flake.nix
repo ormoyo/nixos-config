@@ -17,11 +17,13 @@
     hyprxdg.url = "github:hyprwm/xdg-desktop-portal-hyprland";
 
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
+    nh.url = "github:viperML/nh";
     nix-gaming.url = "github:fufexan/nix-gaming";
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -78,6 +78,13 @@ with lib;
         inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;
     };
 
+    programs.nh = {
+      enable = true;
+      clean.enable = true;
+      clean.extraArgs = "--keep-since 5d --keep 9";
+      flake = "/etc/nixos";
+    };
+
     config = mkIf cfg.time.enable 
     { 
       time.timeZone = cfg.time.timezone;
