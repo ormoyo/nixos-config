@@ -12,15 +12,20 @@ let
   };
   create-option = name: {
     name = name;
-    value = {
-      enable = lib.mkEnableOption "Enable ${name} service";
-      dataDir = lib.mkOption {
-        type = lib.types.str;
-        default = "${cfg.dataPath}/${name}";
-      };
-      user = lib.mkOption {
-        type = lib.types.ints.unsign;
-        default = cfg.user;
+    value = lib.mkOption {
+      default = {};
+      type = with lib.types; submodule {
+        options = {
+          enable = lib.mkEnableOption "Enable ${name} service";
+          dataDir = lib.mkOption {
+            type = lib.types.str;
+            default = "${cfg.dataPath}/${name}";
+          };
+          user = lib.mkOption {
+            type = lib.types.ints.unsign;
+            default = cfg.user;
+          };
+        };
       };
     };
   };
@@ -40,7 +45,20 @@ with lib;
       type = types.ints.unsign;
       default = 1000;
     };
-    containers = builtins.listToAttrs options;
+    containers = mkOption {
+      default = {};
+
+      description = "Contains all specific container options";
+      example = {
+        nginx.enable = false;
+        nginx.user = 0;
+        nginx.dataDir = "/var/nginx";
+      };
+      
+      type = with types; submodule {
+        options = builtins.listToAttrs options;
+      };
+    };
   };
 
   config = mkIf cfg.enable {
