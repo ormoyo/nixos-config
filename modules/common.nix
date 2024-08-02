@@ -1,6 +1,6 @@
 { pkgs, lib, config, inputs, ... }:
 let
-  cfg = config.packages.common;
+  cfg = config.settings.common;
   mkCommonEnableOption = name: lib.mkOption {
     type = lib.types.bool;
     default = true;
@@ -14,6 +14,7 @@ with lib;
     grub.enable = mkCommonEnableOption "grub bootloader";
 
     neovim = mkOption {
+      default = {};
       type = with types; submodule {
         options = {
           enable = mkCommonEnableOption "neovim";
@@ -24,6 +25,7 @@ with lib;
 
     packages.enable = mkCommonEnableOption "common packages";
     time = mkOption {
+      default = {};
       type = with types; submodule {
         options = {
           enable = mkCommonEnableOption "common time settings";
@@ -85,12 +87,11 @@ with lib;
       flake = "/etc/nixos";
     };
 
-    config = mkIf cfg.time.enable 
-    { 
-      time.timeZone = cfg.time.timezone;
-      i18n.defaultLocale = "en_US.UTF-8";
-
-      i18n.extraLocaleSettings = {
+    
+    time.timeZone = mkIf cfg.time.enable cfg.time.timezone;
+    i18n = {
+      defaultLocale = "en_US.UTF-8";
+      extraLocaleSettings = {
         LC_ADDRESS = cfg.time.locale;
         LC_IDENTIFICATION = cfg.time.locale;
         LC_MEASUREMENT = cfg.time.locale;

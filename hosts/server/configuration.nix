@@ -1,9 +1,8 @@
 { config, pkgs, lib, ... }:
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [
       ./hardware-configuration.nix
-      ./syncthing.nix
     ];
 
   networking.hostName = "server"; # Define your hostname.
