@@ -1,9 +1,4 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 { pkgs, inputs, ... }:
-
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -17,46 +12,9 @@
       inputs.sops-nix.nixosModules.sops
     ];
 
-  # Bootloader.
-  boot.loader = {
-    efi = {
-      canTouchEfiVariables = true;
-      efiSysMountPoint = "/boot"; # ← use the same mount point here.
-    };
-    grub = {
-       efiSupport = true;
-       #efiInstallAsRemovable = true; # in case canTouchEfiVariables doesn't work for your system
-       device = "nodev";
-    };
-  };
   networking.hostName = "whipi"; # Define your hostname.
   networking.domain = "pc.org";
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Enable networking
-  networking.networkmanager.enable = true;
-
-  # Set your time zone.
-  time.timeZone = "Asia/Jerusalem";
-
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "en_IL";
-    LC_IDENTIFICATION = "en_IL";
-    LC_MEASUREMENT = "en_IL";
-    LC_MONETARY = "en_IL";
-    LC_NAME = "en_IL";
-    LC_NUMERIC = "en_IL";
-    LC_PAPER = "en_IL";
-    LC_TELEPHONE = "en_IL";
-    LC_TIME = "en_IL";
-  };
+  networking.wireless.enable = true;
 
   i18n.inputMethod = {
       enabled = "fcitx5";
@@ -67,12 +25,10 @@
   };
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
   programs.hyprland = {
-    # Install the packages from nixpkgs
     enable = true;
     package = inputs.hyprland.packages.${pkgs.system}.hyprland;
-    # Whether to enable XWayland
+
     xwayland.enable = true;
   };
 
@@ -156,8 +112,7 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
+    jack.enable = true;
 
     # use the example session manager (no others are packaged yet so this is enabled by default,
     # no need to redefine it in your config for now)
@@ -166,10 +121,9 @@
 
   programs.adb.enable = true;
   programs.zsh.enable = true;
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  services.xserver.libinput.enable = true;
+
   users.users.ormoyo = {
     isNormalUser = true;
     description = "Ormoyo";
@@ -199,12 +153,8 @@
       ormoyo = import ./home/home.nix;
     };
   };
-  # Allow unfree packages
+
   nixpkgs.config.allowUnfree = true;
-
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-
   services.udev.packages = [ pkgs.yubikey-personalization ];
 
   programs.gnupg.agent = {
@@ -222,28 +172,8 @@
     login.u2fAuth = true;
     sudo.u2fAuth = true;
   };
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
 
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
   networking.nftables.enable = false;
-
-  sops.defaultSopsFile = ./secrets.yaml;
-  sops.defaultSopsFormat = "yaml";
-  sops.age.keyFile = "/home/ormoyo/.config/sops/age/keys.txt";
 
   nix.settings = {
     substituters = ["https://nix-gaming.cachix.org"];

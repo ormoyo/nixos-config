@@ -1,24 +1,99 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, config, inputs, ... }:
 let
   cfg = config.packages.common;
+  mkCommonEnableOption = name: lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = "Whether to enable ${name}";
+  };
 in
 with lib;
 {
-  options.packages.common.enable = mkOption {
-    type = types.bool;
-    default = true;
+  options.settings.common = { 
+    enable = mkCommonEnableOption "common settings"; 
+    grub.enable = mkCommonEnableOption "grub bootloader";
+
+    neovim = mkOption {
+      type = with types; submodule {
+        options = {
+          enable = mkCommonEnableOption "neovim";
+          enableNightly = mkEnableOption "setting neovim to nightly version";
+        };
+      };
+    };
+
+    packages.enable = mkCommonEnableOption "common packages";
+    time = mkOption {
+      type = with types; submodule {
+        options = {
+          enable = mkCommonEnableOption "common time settings";
+          timezone = mkOption {
+            type = types.str;
+            default = "Asia/Jerusalem";
+          };
+          locale = mkOption {
+            type = types.str;
+            default = "en_IL";
+          };
+        };
+      };
+    };
   };
 
+
   config = mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [
-      vim
-      nmap
-      ethtool
-      htop
+    boot.loader = mkIf cfg.grub.enable {
+      efi = {
+        canTouchEfiVariables = true;
+        efiSysMountPoint = "/boot";    };
+      grub = {
+         efiSupport = true;
+         device = "nodev";
+      };
+    };
+
+    environment.systemPackages = with pkgs; mkIf cfg.packages.enable [
+      age
+      android-tools
       compsize
-      openssl
-      hdparm
+      ethtool
       git
+      hdparm
+      htop
+      libsecret
+      lua
+      nmap
+      openssl
+      powertop
+      ripgrep
+      sops
     ];
+
+    networking.networkmanager.enable = mkDefault true;
+    programs.neovim = {
+      enable = cfg.neovim.enable;
+      viAlias = true;
+      vimAlias = true;
+      package = lib.mkIf cfg.neovim.enableNightly 
+        inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;
+    };
+
+    config = mkIf cfg.time.enable 
+    { 
+      time.timeZone = cfg.time.timezone;
+      i18n.defaultLocale = "en_US.UTF-8";
+
+      i18n.extraLocaleSettings = {
+        LC_ADDRESS = cfg.time.locale;
+        LC_IDENTIFICATION = cfg.time.locale;
+        LC_MEASUREMENT = cfg.time.locale;
+        LC_MONETARY = cfg.time.locale;
+        LC_NAME = cfg.time.locale;
+        LC_NUMERIC = cfg.time.locale;
+        LC_PAPER = cfg.time.locale;
+        LC_TELEPHONE = cfg.time.locale;
+        LC_TIME = cfg.time.locale;
+      };
+    };
   };
 }

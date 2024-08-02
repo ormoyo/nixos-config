@@ -42,18 +42,17 @@ in {
     protonmail-bridge
     qalculate-gtk
     qpwgraph
+    qbittorrent
     steamPackages.steam-runtime
     stremio
     subtitlecomposer
     thunderbird
     trashy
+    virtiofsd
     vlc
     wl-clipboard
+    youtube-music
     zoom
-
-    # (pkgs.writeShellScriptBin "my-hello" ''
-    #   echo "Hello, ${config.home.username}!"
-    # '')
   ];
 
   home.sessionPath = [ "$HOME/.cargo/bin" ];

@@ -19,11 +19,12 @@
     };
   }; 
 
-  home.packages = [pkgs.firefoxpwa];
+  home.packages = [pkgs.firefoxpwa pkgs.ungoogled-chromium]; 
   programs.firefox = {
     enable = true;
     package = (pkgs.librewolf.override {
       nativeMessagingHosts = [pkgs.firefoxpwa];
+      pipewireSupport = true;
     });
 
     profiles.default = {
