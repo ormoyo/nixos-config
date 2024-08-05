@@ -6,7 +6,6 @@
       ./graphics.nix
       ./tools
       ./virtualization.nix
-      ./secrets.nix
     ];
 
   networking.hostName = "whipi";
