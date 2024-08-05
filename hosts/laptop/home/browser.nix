@@ -24,7 +24,6 @@
     enable = true;
     package = (pkgs.librewolf.override {
       nativeMessagingHosts = [pkgs.firefoxpwa];
-      pipewireSupport = true;
     });
 
     profiles.default = {

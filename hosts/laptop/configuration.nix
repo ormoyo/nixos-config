@@ -9,9 +9,8 @@
       ./secrets.nix
     ];
 
-  networking.hostName = "whipi"; # Define your hostname.
+  networking.hostName = "whipi";
   networking.domain = "pc.org";
-  networking.wireless.enable = true;
 
   i18n.inputMethod = {
     enabled = "fcitx5";
@@ -107,8 +106,6 @@
     bluetooth.enable = true;
   };
 
-  # Enable sound with pipewire.
-  sound.enable = true;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
