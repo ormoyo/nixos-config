@@ -6,9 +6,7 @@
       ./graphics.nix
       ./tools
       ./virtualization.nix
-
-      inputs.home-manager.nixosModules.default
-      inputs.sops-nix.nixosModules.sops
+      ./secrets.nix
     ];
 
   networking.hostName = "whipi"; # Define your hostname.
@@ -16,11 +14,11 @@
   networking.wireless.enable = true;
 
   i18n.inputMethod = {
-      enabled = "fcitx5";
-      fcitx5.addons = with pkgs; [
-          fcitx5-mozc
-          fcitx5-gtk
-      ];
+    enabled = "fcitx5";
+    fcitx5.addons = with pkgs; [
+      fcitx5-mozc
+      fcitx5-gtk
+    ];
   };
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -56,23 +54,23 @@
     HandlePowerKey=hibernate
     HandleLidSwitch=hibernate
   '';
-#  environment.gnome.excludePackages = (with pkgs; [
-#    gnome-photos
-#    gnome-tour
-#  ]) ++ (with pkgs.gnome; [
-#    cheese # webcam tool
-#    gnome-music
-#    gnome-terminal
-#    # epiphany # web browser
-#    geary # email reader
-#    evince # document viewer
-#    totem # video player
-#    tali # poker game
-#    iagno # go game
-#    hitori # suoku game
-#    atomix # puzzle game
-#  ]);
-  
+  #  environment.gnome.excludePackages = (with pkgs; [
+  #    gnome-photos
+  #    gnome-tour
+  #  ]) ++ (with pkgs.gnome; [
+  #    cheese # webcam tool
+  #    gnome-music
+  #    gnome-terminal
+  #    # epiphany # web browser
+  #    geary # email reader
+  #    evince # document viewer
+  #    totem # video player
+  #    tali # poker game
+  #    iagno # go game
+  #    hitori # suoku game
+  #    atomix # puzzle game
+  #  ]);
+
   services.power-profiles-daemon.enable = false;
   services.thermald.enable = true;
   services.tlp = {
@@ -93,12 +91,18 @@
       START_CHARGE_THRESH_BAT0 = 1; # 40 and bellow it starts to charge
       STOP_CHARGE_THRESH_BAT0 = 1; # 80 and above it stops charging
     };
-  }; 
+  };
+
+  services.syncthing = {
+    enable = true;
+    user = "ormoyo";
+  };
+
   programs.nix-ld.enable = true;
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
-  hardware = { 
+  hardware = {
     pulseaudio.enable = false;
     bluetooth.enable = true;
   };
@@ -141,14 +145,14 @@
 
   environment.pathsToLink = [ "/share/xdg-desktop-portal" "/share/applications" ];
   environment.localBinInPath = true;
-  
+
   home-manager = {
     extraSpecialArgs = { inherit inputs; };
 
     useUserPackages = true;
     useGlobalPkgs = true;
 
-    users = { 
+    users = {
       ormoyo = import ./home/home.nix;
     };
   };
@@ -159,7 +163,7 @@
   programs.gnupg.agent = {
     enable = true;
     enableSSHSupport = true;
-  }; 
+  };
 
   programs.steam = {
     enable = true;
@@ -175,8 +179,8 @@
   networking.nftables.enable = false;
 
   nix.settings = {
-    substituters = ["https://nix-gaming.cachix.org"];
-    trusted-public-keys = ["nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="];
+    substituters = [ "https://nix-gaming.cachix.org" ];
+    trusted-public-keys = [ "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4=" ];
   };
 
   nixpkgs.config.packageOverrides = pkgs: {
@@ -194,12 +198,12 @@
   system.stateVersion = "23.11"; # Did you read the comment?
   system.activationScripts = {
     rmFirefoxContainers =
-    ''
-      rm -f /home/*/.mozilla/firefox/*/containers.json
-    '';
+      ''
+        rm -f /home/*/.mozilla/firefox/*/containers.json
+      '';
     rmFirefoxSearch =
-    ''
-      rm -f /home/*/.mozilla/firefox/*/search.json*
-    '';
+      ''
+        rm -f /home/*/.mozilla/firefox/*/search.json*
+      '';
   };
 }

@@ -3,15 +3,15 @@
   imports =
     [
       ./hardware-configuration.nix
+      ./secrets.nix
     ];
 
-  networking.hostName = "server"; # Define your hostname.
+  networking.hostName = "server";
   networking.domain = "amoyal.org";
 
   networking.interfaces.enp1s0.wakeOnLan.enable = true;
   environment.etc."zshsfas".source = "${pkgs.openssl}";
 
-  # Configure keymap in X11
   services.xserver = {
     layout = "us";
     xkbVariant = "";
@@ -30,19 +30,24 @@
     user = 1000;
   };
 
-  nixpkgs.config.allowUnfree = true;
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
   services.openssh = {
     enable = true;
     settings.PasswordAuthentication = false;
   };
 
+  services.syncthing = {
+    enable = true;
+    user = "ormoyo";
+  };
+
+  nixpkgs.config.allowUnfree = true;
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
   networking.firewall.allowedTCPPorts = [ 443 81 ];
 
   system.stateVersion = "23.11";
-  powerManagement.powerUpCommands = 
-  ''
-    ${pkgs.hdparm}/sbin/hdparm -B 128 -S 180 /dev/disk/by-uuid/f597bcf2-0d98-456f-9890-4b39f1069c2d
-  ''; 
+  powerManagement.powerUpCommands =
+    ''
+      ${pkgs.hdparm}/sbin/hdparm -B 128 -S 180 /dev/disk/by-uuid/f597bcf2-0d98-456f-9890-4b39f1069c2d
+    '';
 }
