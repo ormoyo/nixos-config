@@ -18,15 +18,23 @@
 
   users.users.ormoyo = {
     isNormalUser = true;
-    description = "Ormoyo";
     extraGroups = [ "networkmanager" "wheel" ];
     uid = 1000;
+    openssh.authorizedKeys.keys = [
+      "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIDYqb9ThU8mCA+5+6hdtESjMBFa6qnBMi85yabDiAezPAAAABHNzaDo= ormoyo@arch.nice.org"
+      "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIHtPiDAln9vl7TaLTUfgl1vK4kmLBHDybLsLMNw9au4PAAAABHNzaDo= ormoyo@arch.nice.org"
+      "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIFgtYocIFObw1brKFrWyHh8AvgNgCfAGgDSQSkFPHtoHAAAABHNzaDo= ormoyo@whipi.pc.org"
+    ];
+  };
+
+  users.users.docker = {
+    isSystemUser = true;
   };
 
   services.docker = {
     enable = true;
     dataPath = "/mnt/disk2/docker";
-    user = 1000;
+    user = "ormoyo";
   };
 
   services.openssh = {
