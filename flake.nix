@@ -90,7 +90,7 @@
         inputs.sops-nix.homeManagerModules.sops
         inputs.hyprcursor-phinger.homeManagerModules.hyprcursor-phinger
         inputs.nix-index-database.hmModules.nix-index
-        nix-index
+        index
       ];
 
       nixosConfigurations.laptop = nixosSystem {

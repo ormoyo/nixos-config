@@ -35,6 +35,11 @@
     enable = true;
     dataPath = "/mnt/disk2/docker";
     user = "ormoyo";
+    backups = {
+      enable = true;
+      time = "Mon,Sat 02:05";
+      timePersistent = true;
+    };
   };
 
   services.openssh = {

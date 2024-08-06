@@ -50,20 +50,20 @@ with lib;
     networking.firewall.allowedTCPPorts = [ 22000 ];
     networking.firewall.allowedUDPPorts = [ 22000 ];
 
-    sops.secrets.syncthing.cert = {
+    sops.secrets."syncthing/cert" = {
       mode = "0400";
       owner = config.users.users.${cfg.user}.name;
     };
-    sops.secrets.syncthing.key = {
+    sops.secrets."syncthing/key" = {
       mode = "0400";
       owner = config.users.users.${cfg.user}.name;
     };
 
     services.syncthing = {
-      dataDir = "/home/${cfg.user}/Documents";
-      configDir = "/home/${cfg.user}/.config/syncthing";
-      cert = config.sops.secrets.syncthing.cert.path;
-      key = config.sops.secrets.syncthing.key.path;
+      dataDir = "${config.users.users.${cfg.user}.home}/Documents";
+      configDir = "${config.users.users.${cfg.user}.home}/.config/syncthing";
+      cert = config.sops.secrets."syncthing/cert".path;
+      key = config.sops.secrets."syncthing/key".path;
       overrideDevices = true;
       overrideFolders = true;
       settings = {

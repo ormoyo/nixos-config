@@ -25,6 +25,22 @@ with lib;
       type = with types; either str ints.unsign;
       default = 1000;
     };
+    backups = mkOption {
+      default = { };
+      type = types.submodule {
+        options = {
+          enable = mkEnableOption "backing up docker dirs";
+
+          time = mkOption {
+            type = types.str;
+          };
+          timePersistent = mkOption {
+            type = types.bool;
+            default = true;
+          };
+        };
+      };
+    };
     containers = mkOption {
       default = { };
 
@@ -39,7 +55,7 @@ with lib;
         options = {
           enable = mkOption {
             type = types.bool;
-            default = false;
+            default = true;
             description = "Whether to enable ${name} docker container";
           };
 
@@ -53,6 +69,11 @@ with lib;
             default = "${cfg.dataPath}/${name}";
           };
 
+          backups.exclude = mkOption {
+            type = types.listOf types.str;
+            default = [ ];
+          };
+
           user = mkOption {
             type = with types; either str ints.unsign;
             default = cfg.user;
@@ -62,29 +83,47 @@ with lib;
     };
   };
 
-  config = mkIf cfg.enable {
-    #  users.extraUsers.ormoyo.extraGroups = [ "podman" ];
-    environment.systemPackages = [
-      inputs.arion.packages.arion
-    ];
+  config =
+    let
+      getUser = container: cfg.containers.${container}.user;
+      enabledContainers = (lib.lists.partition (file: cfg.containers."${file}".enable) step2).right;
+      containers = map
+        (file: create
+          {
+            name = cfg.containers.${file}.serviceName;
+            user =
+              if builtins.isString (getUser file)
+              then config.users.users.${getUser file}.uid
+              else (getUser file);
+            path = cfg.containers.${file}.dataDir;
+          })
+        enabledContainers;
+      exclusions =
+        lib.lists.flatten
+          (map
+            (container:
+              let
+                module = cfg.containers.${container};
+              in
+              map (exclusion: "${module.dataDir}/${exclusion}") module.backups.exclude
+            )
+            enabledContainers);
 
-    virtualisation =
-      let
-        getUser = container: cfg.containers.${container}.user;
-        enabledContainers = (lib.lists.partition (file: cfg.containers."${file}".enable) step2).right;
-        containers = map
-          (file: create
-            {
-              name = cfg.containers.${file}.serviceName;
-              user =
-                if builtins.isString (getUser file)
-                then config.users.users.${getUser file}.uid
-                else (getUser file);
-              path = cfg.containers.${file}.dataDir;
-            })
-          enabledContainers;
-      in
-      {
+    in
+    mkIf cfg.enable {
+      #  users.extraUsers.ormoyo.extraGroups = [ "podman" ];
+      environment.systemPackages = [
+        inputs.arion.packages.arion
+      ];
+
+      services.backups.repos.docker = lib.mkIf cfg.backups.enable {
+        paths = [ ${cfg.dataPath} ];
+        time = cfg.backups.time;
+        timePersistent = cfg.backups.timePersistent;
+        exclude = exclusions;
+      };
+
+      virtualisation = {
         docker.enable = true;
         arion = {
           backend = "docker";
@@ -92,11 +131,11 @@ with lib;
         };
       };
 
-    system.activationScripts = {
-      mkNET = ''
-        ${dockerBin} network inspect main-nginx >/dev/null 2>&1 || ${dockerBin} network create main-nginx --subnet 172.20.0.0/16
-      '';
+      system.activationScripts = {
+        mkNET = ''
+          ${dockerBin} network inspect main-nginx >/dev/null 2>&1 || ${dockerBin} network create main-nginx --subnet 172.20.0.0/16
+        '';
+      };
     };
-  };
 }
 
