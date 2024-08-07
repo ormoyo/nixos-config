@@ -46,30 +46,26 @@ with lib;
   config =
     let
       user = config.users.users.backups;
-      secrets = lib.flatten (map
-        (name: value: [
-          (lib.nameValuePair
-            "backups/repo/${name}/file"
-            {
-              mode = "0400";
-              owner = user.name;
-            })
-          (lib.nameValuePair
-            "backups/repo/${name}/pass"
-            {
-              mode = "0400";
-              owner = user.name;
-            })
-        ])
-        (attrNames cfg.repos));
+      secrets = lib.concatMapAttrs
+        (name: value: {
+          "backups/repos/${name}/file" = {
+            mode = "0400";
+            owner = user.name;
+          };
+          "backups/repos/${name}/pass" = {
+            mode = "0400";
+            owner = user.name;
+          };
+        })
+        cfg.repos;
 
       backups = mapAttrs
         (name: value: {
           user = user.name;
           initialize = true;
 
-          repositoryFile = config.secrets."backups/repo/${name}/file".path;
-          passwordFile = config.secrets."backups/repo/${name}/pass".path;
+          repositoryFile = config.sops.secrets."backups/repos/${name}/file".path;
+          passwordFile = config.sops.secrets."backups/repos/${name}/pass".path;
 
           paths = value.paths;
 
@@ -82,6 +78,7 @@ with lib;
         cfg.repos;
     in
     mkIf cfg.enable {
+      users.groups.backups = { };
       users.users.backups = {
         isSystemUser = true;
         description = "Backups managment user";
@@ -90,19 +87,27 @@ with lib;
         group = "backups";
       };
 
-      users.groups.backups = { };
+      systemd.tmpfiles.rules = [
+        "d ${user.home}/.ssh 0700 ${user.name} ${user.group}"
+      ] ++
+      (map (path: "A+ ${path} - - - - u:backups:r-x")
+        (lib.flatten (
+          lib.mapAttrsToList
+            (name: value: cfg.repos.${name}.paths)
+            cfg.repos
+        )));
 
-      sops.secrets = listToAttrs (secrets ++ [
-        (nameValuePair "ssh/backups/key" {
+      sops.secrets = secrets // {
+        "ssh/backups/key" = {
           mode = "0400";
           owner = user.name;
-        })
-        (nameValuePair "ssh/backups/config" {
+        };
+        "ssh/backups/config" = {
           mode = "0400";
           owner = user.name;
           path = "${user.home}/.ssh/config";
-        })
-      ]);
+        };
+      };
       services.restic.backups = backups;
     };
 }
