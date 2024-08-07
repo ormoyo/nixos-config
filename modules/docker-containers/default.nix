@@ -121,9 +121,18 @@ with lib;
             (container:
               let
                 module = cfg.containers.${container};
+                file = import "${toString ./.}/${container}.nix";
+                isBackupEnabled =
+                  if lib.hasAttrByPath [ "backups" "enable" ] file
+                  then file.backups.enable
+                  else true;
+                exclusions =
+                  lib.optionals (lib.hasAttrByPath [ "backups" "exclude" ] file)
+                    file.backups.exclude ++
+                  lib.optionals (!isBackupEnabled) [ "**" ];
               in
               map (exclusion: "${module.dataDir}/${exclusion}")
-                module.backups.exclude
+                (module.backups.exclude ++ exclusions)
             )
             enabledContainers);
     in

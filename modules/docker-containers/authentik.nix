@@ -5,6 +5,8 @@ let
 in {
   project.name = name;
   host.uid = id;
+
+  backups.exclude = [ "redis" ];
   services = {
     server.service = {
       container_name = name;
