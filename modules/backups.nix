@@ -1,6 +1,13 @@
 { config, lib, ... }:
 let
   cfg = config.services.backups;
+  defaultExcludePatterns = [
+    ".git"
+    "tmp"
+    "*-tmp"
+    "*_tmp"
+    "*.tmp"
+  ];
 in
 with lib;
 {
@@ -38,6 +45,11 @@ with lib;
             type = types.listOf types.str;
             default = [ ];
           };
+
+          removeDefaultExcludes = mkOption {
+            type = types.bool;
+            default = false;
+          };
         };
       }));
     };
@@ -69,7 +81,9 @@ with lib;
 
           paths = value.paths;
 
-          exclude = value.exclude;
+          exclude = value.exclude ++
+            lib.optionals (!value.removeDefaultExcludes)
+              defaultExcludePatterns;
           timerConfig = {
             OnCalendar = value.time;
             Persistent = value.timePersistent;
@@ -90,7 +104,7 @@ with lib;
       systemd.tmpfiles.rules = [
         "d ${user.home}/.ssh 0700 ${user.name} ${user.group}"
       ] ++
-      (map (path: "A+ ${path} - - - - u:backups:r-x")
+      (map (path: "A+ ${path} - - - - m::r-x,u:backups:r-x")
         (lib.flatten (
           lib.mapAttrsToList
             (name: value: cfg.repos.${name}.paths)
