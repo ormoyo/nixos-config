@@ -9,13 +9,6 @@
   networking.domain = "amoyal.org";
 
   networking.interfaces.enp1s0.wakeOnLan.enable = true;
-  environment.etc."zshsfas".source = "${pkgs.openssl}";
-
-  services.xserver = {
-    layout = "us";
-    xkbVariant = "";
-  };
-
   users.users.ormoyo = {
     isNormalUser = true;
     extraGroups = [ "networkmanager" "wheel" ];
@@ -25,10 +18,6 @@
       "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIHtPiDAln9vl7TaLTUfgl1vK4kmLBHDybLsLMNw9au4PAAAABHNzaDo= ormoyo@arch.nice.org"
       "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIFgtYocIFObw1brKFrWyHh8AvgNgCfAGgDSQSkFPHtoHAAAABHNzaDo= ormoyo@whipi.pc.org"
     ];
-  };
-
-  users.users.docker = {
-    isSystemUser = true;
   };
 
   services.docker = {
