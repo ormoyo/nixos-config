@@ -16,15 +16,16 @@ let
       name
       {
         serviceName = name;
-        settings = import "${toString ./.}/${name}.nix" {
-          name = cfg.containers.${name}.serviceName;
-          id =
-            if builtins.isString (getUser name)
-            then config.users.users.${getUser name}.uid
-            else (getUser name);
-          path = cfg.containers.${name}.dataDir;
-          inherit pkgs;
-        };
+        settings = lib.filterAttrs (n: v: n != "backups")
+          (import "${toString ./.}/${name}.nix" {
+            name = cfg.containers.${name}.serviceName;
+            id =
+              if builtins.isString (getUser name)
+              then config.users.users.${getUser name}.uid
+              else (getUser name);
+            path = cfg.containers.${name}.dataDir;
+            inherit pkgs;
+          });
       };
   create_option = name:
     lib.nameValuePair
