@@ -7,7 +7,7 @@
       container_name = name;
       image = "matrixdotorg/synapse:latest";
       restart = "unless-stopped";
-      networks = [ "frontend" ];
+      networks = [ "default" "frontend" ];
       depends_on = [ "db" ];
       volumes = [
         "${path}/data:/data"
