@@ -25,6 +25,8 @@ let
               else (getUser name);
             path = cfg.containers.${name}.dataDir;
             inherit pkgs;
+            inherit config;
+            inherit lib;
           });
       };
   create_option = name:
