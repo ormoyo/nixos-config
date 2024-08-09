@@ -1,4 +1,4 @@
-{ name, path, id, ... }:
+{ name, path, id, getSecret, ... }:
 {
   project.name = name;
   host.uid = id;
@@ -7,7 +7,7 @@
       container_name = name;
       image = "matrixdotorg/synapse:latest";
       restart = "unless-stopped";
-      networks = [ "default" "frontend" ];
+      networks = [ "default" "cloudflare-tunnel" "frontend" ];
       depends_on = [ "db" ];
       volumes = [
         "${path}/data:/data"
@@ -27,9 +27,20 @@
         POSTGRES_PASSWORD = "xa8hM86YWIGFzIRLdshxJEZ7t69ZzMrcyA0KD";
       };
     };
+
+    cloudflare-tunnel.service = {
+      container_name = "cloudflare-tunnel";
+      image = "cloudflare/cloudflared";
+      restart = "unless-stopped";
+      command = "tunnel run";
+      networks = [ "cloudflare-tunnel" ];
+      env_file = [ ((getSecret "tunnel-token").path) ];
+    };
   };
   networks.frontend = {
     name = "main-nginx";
     external = true;
   };
+
+  networks.cloudflare-tunnel = {  };
 }

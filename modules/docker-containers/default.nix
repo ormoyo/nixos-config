@@ -24,6 +24,7 @@ let
               then config.users.users.${getUser name}.uid
               else (getUser name);
             path = cfg.containers.${name}.dataDir;
+            getSecret = secret: config.sops.secrets."docker/${name}/${secret}";
             inherit pkgs;
             inherit config;
             inherit lib;
