@@ -23,11 +23,11 @@
   programs.hyprland = {
     enable = true;
     package = inputs.hyprland.packages.${pkgs.system}.hyprland;
-
     xwayland.enable = true;
+    portalPackage = inputs.hyprxdg.packages.${pkgs.system}.xdg-desktop-portal-hyprland;
   };
 
-  services.displayManager.sessionPackages = (with pkgs; [ hyprland ]);
+  services.displayManager.sessionPackages = [ inputs.hyprland.packages.${pkgs.system}.hyprland ];
 
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.gdm.enableGnomeKeyring = true;
@@ -133,14 +133,13 @@
   xdg.portal = {
     enable = true;
     wlr.enable = true;
-    xdgOpenUsePortal = true;
-    extraPortals = with pkgs; lib.mkDefault [
+    extraPortals = with pkgs; [
       xdg-desktop-portal-gtk
     ];
   };
 
-  environment.pathsToLink = [ "/share/xdg-desktop-portal" "/share/applications" ];
   environment.localBinInPath = true;
+  environment.pathsToLink = [ "/share/xdg-desktop-portal" "/share/applications" ];
 
   home-manager = {
     extraSpecialArgs = { inherit inputs; };

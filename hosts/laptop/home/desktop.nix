@@ -46,7 +46,6 @@
 
     inputs.hyprlock.packages.${pkgs.system}.hyprlock
     inputs.hypridle.packages.${pkgs.system}.hypridle
-    inputs.hyprxdg.packages.${pkgs.system}.xdg-desktop-portal-hyprland
     inputs.hyprpicker.packages.${pkgs.system}.hyprpicker
     inputs.hyprcursor.packages.${pkgs.system}.hyprcursor 
     inputs.hyprcursor-phinger.packages.${pkgs.system}.hyprcursor-phinger

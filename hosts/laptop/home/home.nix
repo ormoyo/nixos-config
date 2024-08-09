@@ -1,9 +1,10 @@
 { pkgs, inputs, ... }:
 let
   gaming-pkgs = inputs.nix-gaming.packages.${pkgs.system};
-in {
+in
+{
   imports = [
-#    inputs.nix-flatpak.homeManagerModules.default
+    # inputs.nix-flatpak.homeManagerModules.default
     ./desktop.nix
     ./browser.nix
     ./shell.nix
@@ -57,13 +58,13 @@ in {
 
   home.sessionPath = [ "$HOME/.cargo/bin" ];
 
-#  services.flatpak.enableModule = true;
-#  services.flatpak.remotes.flathub = "https://dl.flathub.org/repo/flathub.flatpakrepo";
-  
-#  services.flatpak.packages = [
-#    "flathub:app/com.usebottles.bottles//stable"
-#    "flathub:app/dev.vencord.Vesktop//stable"
-#  ];
+  #  services.flatpak.enableModule = true;
+  #  services.flatpak.remotes.flathub = "https://dl.flathub.org/repo/flathub.flatpakrepo";
+
+  #  services.flatpak.packages = [
+  #    "flathub:app/com.usebottles.bottles//stable"
+  #    "flathub:app/dev.vencord.Vesktop//stable"
+  #  ];
 
   services.gnome-keyring.enable = true;
   programs.kitty = {
@@ -76,7 +77,7 @@ in {
       package = pkgs.nerdfonts;
     };
   };
- 
+
   programs.btop = {
     enable = true;
     settings = {
@@ -92,8 +93,8 @@ in {
 
   dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {
-      autoconnect = ["qemu:///system"];
-      uris = ["qemu:///system"];
+      autoconnect = [ "qemu:///system" ];
+      uris = [ "qemu:///system" ];
     };
   };
 
@@ -117,15 +118,15 @@ in {
   };
 
   systemd.user.services.mpris-proxy = {
-      Unit.Description = "Mpris proxy";
-      Install.After = [ "network.target" "sound.target" ];
-      Install.WantedBy = [ "default.target" ];
-      Service.ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
+    Unit.Description = "Mpris proxy";
+    Install.After = [ "network.target" "sound.target" ];
+    Install.WantedBy = [ "default.target" ];
+    Service.ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
   };
 
   systemd.user.services.protonmail-bridge = {
     Unit.Description = "Runs protonmail-bridge";
-    Install.WantedBy = ["default.target"];
+    Install.WantedBy = [ "default.target" ];
     Service.ExecStart = "${pkgs.protonmail-bridge}/bin/protonmail-bridge -n";
   };
 }
