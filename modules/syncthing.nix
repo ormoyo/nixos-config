@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, outputs, ... }:
 let
   cfg = config.services.syncthing;
   devs = {
@@ -33,14 +33,6 @@ let
     nvim = {
       path = "/home/${cfg.user}/.config/nvim";
       devices = builtins.attrNames devs;
-    };
-  };
-
-  create_device = { name, id, addresses }: {
-    name = name;
-    value = {
-      id = id;
-      addresses = addresses;
     };
   };
 in
