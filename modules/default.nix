@@ -1,8 +1,9 @@
+{ outputs, ... }:
 {
   imports = [
     ./common.nix
     ./backups.nix
     ./docker-containers
-    ./syncthing.nix
+    ./syncthing.nix { inherit outputs; }
   ];
 }

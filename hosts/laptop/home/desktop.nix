@@ -57,7 +57,7 @@
     appimage-run
     blueberry
     brightnessctl
-    cinnamon.nemo
+    nemo
     cliphist
     dunst
     hyprshot

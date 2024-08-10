@@ -9,12 +9,12 @@ let
 in
 with lib;
 {
-  options.settings.common = { 
-    enable = mkCommonEnableOption "common settings"; 
+  options.settings.common = {
+    enable = mkCommonEnableOption "common settings";
     grub.enable = mkCommonEnableOption "grub bootloader";
 
     neovim = mkOption {
-      default = {};
+      default = { };
       type = with types; submodule {
         options = {
           enable = mkCommonEnableOption "neovim";
@@ -25,7 +25,7 @@ with lib;
 
     packages.enable = mkCommonEnableOption "common packages";
     time = mkOption {
-      default = {};
+      default = { };
       type = with types; submodule {
         options = {
           enable = mkCommonEnableOption "common time settings";
@@ -47,10 +47,11 @@ with lib;
     boot.loader = mkIf cfg.grub.enable {
       efi = {
         canTouchEfiVariables = true;
-        efiSysMountPoint = "/boot";    };
+        efiSysMountPoint = "/boot";
+      };
       grub = {
-         efiSupport = true;
-         device = "nodev";
+        efiSupport = true;
+        device = "nodev";
       };
     };
 
@@ -60,6 +61,7 @@ with lib;
       compsize
       ethtool
       git
+      gitui
       hdparm
       htop
       libsecret
@@ -76,18 +78,18 @@ with lib;
       enable = cfg.neovim.enable;
       viAlias = true;
       vimAlias = true;
-      package = lib.mkIf cfg.neovim.enableNightly 
+      package = mkIf cfg.neovim.enableNightly
         inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;
     };
 
     programs.nh = {
       enable = true;
+      package = inputs.nh.packages.${pkgs.system}.nh;
       clean.enable = true;
       clean.extraArgs = "--keep-since 5d --keep 9";
       flake = "/etc/nixos";
     };
 
-    
     time.timeZone = mkIf cfg.time.enable cfg.time.timezone;
     i18n = {
       defaultLocale = "en_US.UTF-8";

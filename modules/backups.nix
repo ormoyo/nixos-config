@@ -58,7 +58,7 @@ with lib;
   config =
     let
       user = config.users.users.backups;
-      secrets = lib.concatMapAttrs
+      secrets = concatMapAttrs
         (name: value: {
           "backups/repos/${name}/file" = {
             mode = "0400";
@@ -82,7 +82,7 @@ with lib;
           paths = value.paths;
 
           exclude = value.exclude ++
-            lib.optionals (!value.removeDefaultExcludes)
+            optionals (!value.removeDefaultExcludes)
               defaultExcludePatterns;
           timerConfig = {
             OnCalendar = value.time;
@@ -104,9 +104,9 @@ with lib;
       systemd.tmpfiles.rules = [
         "d ${user.home}/.ssh 0700 ${user.name} ${user.group}"
       ] ++
-      (map (path: "A+ ${path} - - - - m::r-x,u:backups:r-x")
-        (lib.flatten (
-          lib.mapAttrsToList
+      (builtins.map (path: "A+ ${path} - - - - m::r-x,u:backups:r-x")
+        (flatten (
+          mapAttrsToList
             (name: value: cfg.repos.${name}.paths)
             cfg.repos
         )));
