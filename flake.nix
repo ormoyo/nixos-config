@@ -53,6 +53,7 @@
       nixosSystem = { name, homeManager ? false }: nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs;
+          outputs = self;
         };
         modules = [
           ./hosts/${name}/configuration.nix
@@ -70,6 +71,7 @@
       nixosSystemStable = { name, homeManager ? false }: nixpkgs-stable.lib.nixosSystem {
         specialArgs = {
           inherit inputs;
+          outputs = self;
         };
         modules = [
           ./hosts/${name}/configuration.nix
