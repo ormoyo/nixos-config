@@ -152,7 +152,12 @@ with lib;
               optionals (hasAttrByPath [ "custom" "secrets" ] file)
                 file.custom.secrets;
           in
-          builtins.map (secret: nameValuePair "docker/${name}/${secret}" { owner = module.user; }) secrets
+          builtins.map
+            (secret: nameValuePair "docker/${name}/${secret}" {
+              owner = module.user;
+              restartUnits = [ "${name}.service" ];
+            })
+            secrets
         )
         enabledServices);
     in
