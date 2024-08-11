@@ -131,11 +131,11 @@ with lib;
                 file = import_file name;
                 isBackupEnabled =
                   if hasAttrByPath [ "custom" "backups" "enable" ] file
-                  then file.backups.enable
+                  then file.custom.backups.enable
                   else true;
                 exclusions =
                   optionals (hasAttrByPath [ "custom" "backups" "exclude" ] file)
-                    file.backups.exclude ++
+                    file.custom.backups.exclude ++
                   optionals (!isBackupEnabled) [ "**" ];
               in
               builtins.map (exclusion: "${module.dataDir}/${exclusion}")

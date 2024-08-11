@@ -2,6 +2,7 @@
 {
   project.name = name;
   host.uid = id;
+  custom.secrets = [ "tunnel-token" ];
   services = {
     app.service = {
       container_name = name;
@@ -34,7 +35,7 @@
       restart = "unless-stopped";
       command = "tunnel run";
       networks = [ "cloudflare-tunnel" ];
-      env_file = [ ((getSecret "tunnel-token").path) ];
+      env_file = [ (getSecret "tunnel-token") ];
     };
   };
   networks.frontend = {

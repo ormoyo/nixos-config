@@ -1,7 +1,5 @@
 { name, path, id, config, ... }:
-let
-  cfg = config.services.docker.containers;
-in {
+{
   project.name = name;
   host.uid = id;
   services = {
@@ -14,7 +12,7 @@ in {
       volumes = [
         "${path}/data:/data" 
         "${path}/letsencrypt:/etc/letsencrypt" 
-        "${cfg.nextcloud.dataDir}/data:/var/www/html"
+        "${config.services.docker.services.nextcloud.dataDir}/data:/var/www/html"
       ];
     };
   };
