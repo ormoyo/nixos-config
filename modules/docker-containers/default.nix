@@ -19,7 +19,7 @@ let
         then config.users.users.${getUser name}.uid
         else (getUser name);
       path = cfg.services.${name}.dataDir;
-      getSecret = secret: config.sops.secrets."docker/${name}/${secret}";
+      getSecret = secret: config.sops.secrets."docker/${name}/${secret}".path;
       inherit pkgs;
       inherit config;
       inherit lib;
