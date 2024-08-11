@@ -99,10 +99,10 @@ with lib;
       };
     };
 
-    containers = mkOption {
+    services = mkOption {
       default = { };
 
-      description = "Contains all specific container options";
+      description = "Contains all specific docker service options";
       example = {
         nginx.enable = false;
         nginx.user = 0;
@@ -117,16 +117,15 @@ with lib;
 
   config =
     let
-      enabledContainers = (partition (file: cfg.containers."${file}".enable) step2).right;
-      containers = builtins.map (name: create_container name) enabledContainers;
+      enabledServices = (partition (file: cfg.services."${file}".enable) step2).right;
+      services = builtins.map (name: create_service name) enabledServices;
 
       exclusions =
         flatten
           (builtins.map
-            (container:
+            (name:
               let
-                module = cfg.containers.${container};
-                file = import "${toString ./.}/${container}.nix";
+                module = cfg.services.${name};
                 isBackupEnabled =
                   if hasAttrByPath [ "custom" "backups" "enable" ] file
                   then file.backups.enable
@@ -139,20 +138,19 @@ with lib;
               builtins.map (exclusion: "${module.dataDir}/${exclusion}")
                 (module.backups.exclude ++ exclusions)
             )
-            enabledContainers);
+            enabledServices);
 
-      secrets = (builtins.map
-        (container:
+      secrets = flatten (builtins.map
+        (name:
           let
-            module = cfg.containers.${container};
-            file = import "${toString ./.}/${container}.nix";
+            module = cfg.services.${name};
             secrets =
               optionals (hasAttrByPath [ "custom" "secrets" ] file)
                 file.custom.secrets;
           in
-          builtins.map (secret: nameValuePair "docker/${container}/${secret}" { owner = module.user; }) secrets
+          builtins.map (secret: nameValuePair "docker/${name}/${secret}" { owner = module.user; }) secrets
         )
-        enabledContainers);
+        enabledServices);
     in
     mkIf cfg.enable {
       #  users.extraUsers.ormoyo.extraGroups = [ "podman" ];
@@ -172,7 +170,7 @@ with lib;
         docker.enable = true;
         arion = {
           backend = "docker";
-          projects = listToAttrs containers;
+          projects = listToAttrs services;
         };
       };
 
