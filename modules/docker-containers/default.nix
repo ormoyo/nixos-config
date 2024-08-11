@@ -147,7 +147,7 @@ with lib;
             module = cfg.containers.${container};
             file = import "${toString ./.}/${container}.nix";
             secrets =
-              optionals (hasAttrByPath [ "custom" "secrets" ])
+              optionals (hasAttrByPath [ "custom" "secrets" ] file)
                 file.custom.secrets;
           in
           builtins.map (secret: nameValuePair "docker/${container}/${secret}" { owner = module.user; }) secrets
