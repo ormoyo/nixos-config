@@ -144,12 +144,13 @@ with lib;
       secrets = (builtins.map
         (container:
           let
+            module = cfg.containers.${container};
             file = import "${toString ./.}/${container}.nix";
             secrets =
-              optionals hasAttrByPath [ "custom" "secrets" ]
+              optionals (hasAttrByPath [ "custom" "secrets" ])
                 file.custom.secrets;
           in
-          builtins.map (secret: nameValuePair "docker/${container}/${secret}" {}) secrets
+          builtins.map (secret: nameValuePair "docker/${container}/${secret}" { owner = module.user; }) secrets
         )
         enabledContainers);
     in
