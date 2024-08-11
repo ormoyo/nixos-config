@@ -10,25 +10,27 @@ let
   step1 = lib.lists.remove "default.nix" dirFiles;
   step2 = builtins.map (file: builtins.replaceStrings [ ".nix" ] [ "" ] file) step1;
 
-  getUser = container: cfg.containers.${container}.user;
-  create_container = name:
+  getUser = service: cfg.services.${service}.user;
+  import_file = name:
+    import "${toString ./.}/${name}.nix" {
+      name = cfg.services.${name}.serviceName;
+      id =
+        if builtins.isString (getUser name)
+        then config.users.users.${getUser name}.uid
+        else (getUser name);
+      path = cfg.services.${name}.dataDir;
+      getSecret = secret: config.sops.secrets."docker/${name}/${secret}";
+      inherit pkgs;
+      inherit config;
+      inherit lib;
+    };
+  create_service = name:
     lib.nameValuePair
       name
       {
         serviceName = name;
         settings = lib.filterAttrs (n: v: n != "custom")
-          (import "${toString ./.}/${name}.nix" {
-            name = cfg.containers.${name}.serviceName;
-            id =
-              if builtins.isString (getUser name)
-              then config.users.users.${getUser name}.uid
-              else (getUser name);
-            path = cfg.containers.${name}.dataDir;
-            getSecret = secret: config.sops.secrets."docker/${name}/${secret}";
-            inherit pkgs;
-            inherit config;
-            inherit lib;
-          });
+          (import_file name);
       };
   create_option = name:
     lib.nameValuePair
@@ -126,6 +128,7 @@ with lib;
             (name:
               let
                 module = cfg.services.${name};
+                file = import_file name;
                 isBackupEnabled =
                   if hasAttrByPath [ "custom" "backups" "enable" ] file
                   then file.backups.enable
@@ -144,6 +147,7 @@ with lib;
         (name:
           let
             module = cfg.services.${name};
+            file = import_file name;
             secrets =
               optionals (hasAttrByPath [ "custom" "secrets" ] file)
                 file.custom.secrets;
