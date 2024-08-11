@@ -1,4 +1,4 @@
-{ pkgs, inputs, config, lib, ... }:
+{ pkgs, config, lib, ... }:
 let
   docker = config.virtualisation.oci-containers.backend;
   dockerBin = "${pkgs.${docker}}/bin/${docker}";
@@ -8,7 +8,7 @@ let
   dirFiles = builtins.attrNames (builtins.readDir ./.);
 
   step1 = lib.lists.remove "default.nix" dirFiles;
-  step2 = map (file: builtins.replaceStrings [ ".nix" ] [ "" ] file) step1;
+  step2 = builtins.map (file: builtins.replaceStrings [ ".nix" ] [ "" ] file) step1;
 
   getUser = container: cfg.containers.${container}.user;
   create_container = name:
@@ -16,7 +16,7 @@ let
       name
       {
         serviceName = name;
-        settings = lib.filterAttrs (n: v: n != "backups")
+        settings = lib.filterAttrs (n: v: n != "custom")
           (import "${toString ./.}/${name}.nix" {
             name = cfg.containers.${name}.serviceName;
             id =
@@ -66,7 +66,7 @@ let
           };
         });
 
-  options = map (name: create_option name) step2;
+  options = builtins.map (name: create_option name) step2;
 in
 with lib;
 {
@@ -117,28 +117,41 @@ with lib;
 
   config =
     let
-      enabledContainers = (lib.partition (file: cfg.containers."${file}".enable) step2).right;
-      containers = map (name: create_container name) enabledContainers;
+      enabledContainers = (partition (file: cfg.containers."${file}".enable) step2).right;
+      containers = builtins.map (name: create_container name) enabledContainers;
+
       exclusions =
-        lib.lists.flatten
-          (map
+        flatten
+          (builtins.map
             (container:
               let
                 module = cfg.containers.${container};
                 file = import "${toString ./.}/${container}.nix";
                 isBackupEnabled =
-                  if lib.hasAttrByPath [ "backups" "enable" ] file
+                  if hasAttrByPath [ "custom" "backups" "enable" ] file
                   then file.backups.enable
                   else true;
                 exclusions =
-                  lib.optionals (lib.hasAttrByPath [ "backups" "exclude" ] file)
+                  optionals (hasAttrByPath [ "custom" "backups" "exclude" ] file)
                     file.backups.exclude ++
-                  lib.optionals (!isBackupEnabled) [ "**" ];
+                  optionals (!isBackupEnabled) [ "**" ];
               in
-              map (exclusion: "${module.dataDir}/${exclusion}")
+              builtins.map (exclusion: "${module.dataDir}/${exclusion}")
                 (module.backups.exclude ++ exclusions)
             )
             enabledContainers);
+
+      secrets = (builtins.map
+        (container:
+          let
+            file = import "${toString ./.}/${container}.nix";
+            secrets =
+              optionals hasAttrByPath [ "custom" "secrets" ]
+                file.custom.secrets;
+          in
+          builtins.map (secret: nameValuePair "docker/${container}/${secret}" {}) secrets
+        )
+        enabledContainers);
     in
     mkIf cfg.enable {
       #  users.extraUsers.ormoyo.extraGroups = [ "podman" ];
@@ -152,6 +165,8 @@ with lib;
         };
       };
 
+      sops.secrets = builtins.listToAttrs secrets;
+
       virtualisation = {
         docker.enable = true;
         arion = {
@@ -159,6 +174,8 @@ with lib;
           projects = listToAttrs containers;
         };
       };
+
+
 
       system.activationScripts = {
         mkNET = ''

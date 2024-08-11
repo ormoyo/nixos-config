@@ -2,6 +2,7 @@
 {
   project.name = name;
   host.uid = id;
+  custom.secrets = [ "users" ];
   services = {
     app.service = {
       container_name = name;
