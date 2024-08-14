@@ -27,4 +27,5 @@
     name = "main-nginx";
     external = true;
   };
+  custom.secrets = [ "admin-token" "domain" "smtp" ];
 }
