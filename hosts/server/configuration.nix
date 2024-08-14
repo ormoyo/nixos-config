@@ -6,7 +6,7 @@
     ];
 
   networking.hostName = "server";
-  networking.domain = "amoyal.org";
+  networking.domain = "cooli.nice";
 
   networking.interfaces.enp1s0.wakeOnLan.enable = true;
   users.users.ormoyo = {
