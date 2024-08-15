@@ -5,7 +5,7 @@
   services = {
     app.service = {
       container_name = name;
-      image = "docker.io/jc21/nginx-proxy-manager:2.9.22";
+      image = "docker.io/jc21/nginx-proxy-manager:latest";
       restart = "unless-stopped";
       ports = [ "443:443" "80:80" "81:81" ];
       networks = ["frontend"];
