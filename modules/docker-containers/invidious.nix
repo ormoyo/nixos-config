@@ -11,14 +11,13 @@
       depends_on = [ "db" ];
       env_file = [ (getSecret "config") ];
       healthcheck = {
-        test = "wget -nv --tries=1 --spider http://127.0.0.1:3000/api/v1/trending || exit 1";
+        test = [
+          "CMD-SHELL"
+          "wget -nv --tries=1 --spider http://127.0.0.1:3000/api/v1/trending || exit 1"
+        ];
         interval = "30s";
         timeout = "5s";
         retries = 2;
-      };
-      logging.options = {
-        max-size = "1G";
-        max-file = "4";
       };
     };
     db.service = {
@@ -34,7 +33,10 @@
         "${path}/postgres:/var/lib/postgresql/data"
         "${path}/config/sql:/config/sql"
       ];
-      healthchecks.test = [ "CMD-SHELL" "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ];
+      healthcheck.test = [
+        "CMD-SHELL"
+        "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
+      ];
     };
 
     # Material frontend
@@ -44,7 +46,7 @@
       restart = "unless-stopped";
       networks = [ "frontend" ];
       env_file = [ (getSecret "invidious-url") ];
-      environment = { 
+      environment = {
         VITE_DEFAULT_RETURNYTDISLIKES_INSTANCE = "https://returnyoutubedislikeapi.com";
         VITE_DEFAULT_SPONSERBLOCK_INSTANCE = "https://sponsor.ajay.app";
         VITE_DEFAULT_DEARROW_INSTANCE = "https://sponsor.ajay.app";
