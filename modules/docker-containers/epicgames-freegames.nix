@@ -1,4 +1,4 @@
-{ name, path, id, ... }:
+{ name, path, id, getSecret, ... }:
 {
   project.name = name;
   host.uid = id;
@@ -8,6 +8,7 @@
       image = "charlocharlie/epicgames-freegames";
       restart = "unless-stopped";
       networks = [ "frontend" ];
+      env_file = [ (getSecret "TZ") ];
       volumes = [ 
         {
           type = "bind";
@@ -15,7 +16,6 @@
           target = "/usr/app/config/config.json";
         }
       ];
-      environment.TZ = "Israel";
     };
   };
   enableDefaultNetwork = false;

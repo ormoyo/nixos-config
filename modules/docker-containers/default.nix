@@ -19,7 +19,10 @@ let
         then config.users.users.${getUser name}.uid
         else (getUser name);
       path = cfg.services.${name}.dataDir;
-      getSecret = secret: config.sops.secrets."docker/${name}/${secret}".path;
+      getSecret = secret:
+        if secret == "TZ"
+        then config.sops.secrets."docker/TZ".path
+        else config.sops.secrets."docker/${name}/${secret}".path;
       inherit pkgs;
       inherit config;
       inherit lib;
@@ -173,7 +176,9 @@ with lib;
         };
       };
 
-      sops.secrets = builtins.listToAttrs secrets;
+      sops.secrets = builtins.listToAttrs secrets // {
+        "docker/TZ" = { mode = "0444"; };
+      };
 
       virtualisation = {
         docker.enable = true;
