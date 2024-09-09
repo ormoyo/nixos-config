@@ -11,7 +11,9 @@
       volumes = [
         "${path}:/soft-serve"
       ];
+      env_file = [ (getSecret "admin-keys") ];
     };
   };
   enableDefaultNetwork = false;
+  custom.secrets = [ "admin-keys" ];
 }
