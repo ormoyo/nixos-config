@@ -12,6 +12,7 @@
         "${path}:/soft-serve"
       ];
       env_file = [ (getSecret "admin-keys") ];
+      environment.SOFT_SERVE_NAME = "My Cool Projects";
     };
   };
   enableDefaultNetwork = false;
