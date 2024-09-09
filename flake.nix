@@ -72,8 +72,8 @@
             inputs.arion.nixosModules.arion
             inputs.nix-index-database.nixosModules.nix-index
             inputs.sops-nix.nixosModules.sops
-          ] ++ nixpkgs.lib.optionals enableHomeManager
-            [ inputs.home-manager.nixosModules.default ];
+          ] ++ nixpkgs.lib.optional enableHomeManager
+            inputs.home-manager.nixosModules.default;
         };
     in
     {
