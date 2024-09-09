@@ -3,7 +3,7 @@
   imports = [
     ./common
     ./backups.nix
-    ./docker-containers
+    ./docker
   ] ++ lib.optional enableHomeManager
     ./home;
 }
