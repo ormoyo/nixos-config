@@ -72,33 +72,10 @@
   hardware.bluetooth.enable = true;
   services.xserver.libinput.enable = true;
 
-
-
-  environment.localBinInPath = true;
-  environment.pathsToLink = [ "/share/xdg-desktop-portal" "/share/applications" "/share/zsh" ];
-
-  home-manager = {
-    extraSpecialArgs = { inherit inputs; };
-    backupFileExtension = "backup";
-
-    useUserPackages = true;
-    useGlobalPkgs = true;
-
-    users = {
-      ormoyo = import ./home/home.nix;
-    };
-  };
-
   services.udev.packages = [ pkgs.yubikey-personalization ];
-
   programs.gnupg.agent = {
     enable = true;
     enableSSHSupport = true;
-  };
-
-  programs.steam = {
-    enable = true;
-    remotePlay.openFirewall = true;
   };
 
   security.pam.u2f.authFile = "/etc/u2f_keys";
@@ -106,17 +83,6 @@
     login.u2fAuth = true;
     sudo.u2fAuth = true;
   };
-
-  networking.nftables.enable = false;
-
-  nix.settings = {
-    substituters = [ "https://nix-gaming.cachix.org" ];
-    trusted-public-keys = [ "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4=" ];
-  };
-
-  nixpkgs.config.packageOverrides = pkgs: {
-    nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
-      inherit pkgs;
     };
   };
 
