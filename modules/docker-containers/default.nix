@@ -1,4 +1,5 @@
 { pkgs, config, lib, ... }:
+with lib;
 let
   docker = config.virtualisation.oci-containers.backend;
   dockerBin = "${pkgs.${docker}}/bin/${docker}";
@@ -73,7 +74,6 @@ let
 
   options = builtins.map (name: create_option name) step2;
 in
-with lib;
 {
   options.services.docker = {
     enable = mkEnableOption "Ormoyo's docker module";

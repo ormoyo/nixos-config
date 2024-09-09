@@ -1,4 +1,5 @@
 { config, lib, ... }:
+with lib;
 let
   cfg = config.services.backups;
   defaultExcludePatterns = [
@@ -9,7 +10,6 @@ let
     "*.tmp"
   ];
 in
-with lib;
 {
   options.services.backups = {
     enable = mkEnableOption "backup services";
@@ -46,9 +46,9 @@ with lib;
             default = [ ];
           };
 
-          removeDefaultExcludes = mkOption {
+          applyDefaultExcludes = mkOption {
             type = types.bool;
-            default = false;
+            default = true;
           };
         };
       }));
@@ -82,7 +82,7 @@ with lib;
           paths = value.paths;
 
           exclude = value.exclude ++
-            optionals (!value.removeDefaultExcludes)
+            optionals (value.applyDefaultExcludes)
               defaultExcludePatterns;
           timerConfig = {
             OnCalendar = value.time;
@@ -104,24 +104,14 @@ with lib;
       systemd.tmpfiles.rules = [
         "d ${user.home}/.ssh 0700 ${user.name} ${user.group}"
       ] ++
-      (builtins.map (path: "A+ ${path} - - - - m::r-x,u:backups:r-x")
+      (builtins.map (path: "A+ ${path} - - - - m::r-x,u:${config.users.users.backups.name}:r-x")
         (flatten (
           mapAttrsToList
             (name: value: cfg.repos.${name}.paths)
             cfg.repos
         )));
 
-      sops.secrets = secrets // {
-        "ssh/backups/key" = {
-          mode = "0400";
-          owner = user.name;
-        };
-        "ssh/backups/config" = {
-          mode = "0400";
-          owner = user.name;
-          path = "${user.home}/.ssh/config";
-        };
-      };
+      sops.secrets = secrets;
       services.restic.backups = backups;
     };
 }

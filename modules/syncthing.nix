@@ -1,4 +1,5 @@
 { config, lib, outputs, ... }:
+with lib;
 let
   cfg = config.services.syncthing;
   devs = {
@@ -36,7 +37,6 @@ let
     };
   };
 in
-with lib;
 {
   config = mkIf cfg.enable {
     networking.firewall.allowedTCPPorts = [ 22000 ];
