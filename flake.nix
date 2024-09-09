@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
+
     home-manager = {
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -35,6 +36,10 @@
 
   outputs = { self, nixpkgs, nixpkgs-stable, ... }@inputs:
     let
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
+
+      domain = "pc.org";
       index = {
         programs.command-not-found.enable = nixpkgs.lib.mkDefault false;
         programs.nix-index = {
@@ -50,40 +55,26 @@
         sops.age.keyFile = nixpkgs.lib.mkDefault "/var/lib/sops-nix/key.txt";
       };
 
-      nixosSystem = { name, homeManager ? false }: nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          inherit inputs;
+      mkSystem = { pkgs, hostname, enableHomeManager ? false }:
+        pkgs.lib.nixosSystem {
+          system = system;
+          specialArgs = { inherit inputs; };
+          modules = [
+            ./hosts/${hostname}/configuration.nix
+            ./hosts/${hostname}/hardware-configuration.nix
+            (import ./modules { inherit enableHomeManager; })
+
+            { networking = { hostname = hostname; domain = domain; }; }
+
+            (sops hostname)
+            index
+
+            inputs.arion.nixosModules.arion
+            inputs.nix-index-database.nixosModules.nix-index
+            inputs.sops-nix.nixosModules.sops
+          ] ++ nixpkgs.lib.optionals enableHomeManager
+            [ inputs.home-manager.nixosModules.default ];
         };
-        modules = [
-          ./hosts/${name}/configuration.nix
-          ./modules
-
-          (sops name)
-          index
-
-          inputs.arion.nixosModules.arion
-          inputs.nix-index-database.nixosModules.nix-index
-          inputs.sops-nix.nixosModules.sops
-        ] ++ nixpkgs.lib.optionals homeManager
-          [ inputs.home-manager.nixosModules.default ];
-      };
-      nixosSystemStable = { name, homeManager ? false }: nixpkgs-stable.lib.nixosSystem {
-        specialArgs = {
-          inherit inputs;
-        };
-        modules = [
-          ./hosts/${name}/configuration.nix
-          ./modules
-
-          (sops name)
-          index
-
-          inputs.arion.nixosModules.arion
-          inputs.nix-index-database.nixosModules.nix-index
-          inputs.sops-nix.nixosModules.sops
-        ] ++ nixpkgs-stable.lib.optionals homeManager
-          [ inputs.home-manager.nixosModules.default ];
-      };
     in
     {
       home-manager.sharedModules = [
@@ -93,14 +84,15 @@
         index
       ];
 
-      nixosConfigurations.laptop = nixosSystem {
-        name = "laptop";
-        homeManager = true;
+      nixosConfigurations.laptop = mkSystem {
+        hostname = "laptop";
+        pkgs = nixpkgs;
+        enableHomeManager = true;
       };
 
-      nixosConfigurations.server = nixosSystemStable {
-        name = "server";
-        homeManager = false;
+      nixosConfigurations.server = mkSystem {
+        hostname = "server";
+        pkgs = nixpkgs-stable;
       };
     };
 }

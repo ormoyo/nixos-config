@@ -1,8 +1,9 @@
-{ outputs, ... }:
+{ lib, enableHomeManager, ... }:
 {
   imports = [
-    ./common.nix
+    ./common
     ./backups.nix
     ./docker-containers
-  ];
+  ] ++ lib.optionals enableHomeManager
+  [ ./home ];
 }
