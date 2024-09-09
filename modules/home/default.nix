@@ -20,8 +20,9 @@ in
     users.users = mapAttrs
     environment.pathsToLink =
       optional cfg.zsh.enable "/share/zsh";
+    users.users = mkIf cfg.zsh.enable (mapAttrs
       (n: v: { shell = pkgs.zsh; })
-      config.settings.common.users;
+      config.settings.common.users);
 
     services.desktopManager.plasma6.enable = true;
     services.displayManager.sessionPackages = mkIf cfg.hyprland.enable [ inputs.hyprland.packages.${pkgs.system}.hyprland ];
@@ -49,7 +50,7 @@ in
     };
 
     programs.adb.enable = true;
-    programs.zsh.enable = true;
+    programs.zsh.enable = cfg.zsh.enable;
 
     services.gnome.gnome-keyring.enable = true;
     security.pam.services.gdm.enableGnomeKeyring = true;
