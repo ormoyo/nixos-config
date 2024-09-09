@@ -18,6 +18,8 @@ in
     };
 
     users.users = mapAttrs
+    environment.pathsToLink =
+      optional cfg.zsh.enable "/share/zsh";
       (n: v: { shell = pkgs.zsh; })
       config.settings.common.users;
 

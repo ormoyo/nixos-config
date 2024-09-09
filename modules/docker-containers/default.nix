@@ -139,7 +139,7 @@ with lib;
                 exclusions =
                   optionals (hasAttrByPath [ "custom" "backups" "exclude" ] file)
                     file.custom.backups.exclude ++
-                  optionals (!isBackupEnabled) [ "**" ];
+                  optional (!isBackupEnabled) "**";
               in
               builtins.map (exclusion: "${module.dataDir}/${exclusion}")
                 (module.backups.exclude ++ exclusions)

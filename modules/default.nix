@@ -4,6 +4,6 @@
     ./common
     ./backups.nix
     ./docker-containers
-  ] ++ lib.optionals enableHomeManager
-  [ ./home ];
+  ] ++ lib.optional enableHomeManager
+    ./home;
 }
