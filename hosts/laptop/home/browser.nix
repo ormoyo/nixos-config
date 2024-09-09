@@ -26,24 +26,12 @@
       nativeMessagingHosts = [pkgs.firefoxpwa];
     });
 
+    policies = {
+      DisableFirefoxAccounts = false;
+    };
     profiles.default = {
       settings = {
         "privacy.clearOnShutdown.history" = false;
-      };
-
-
-      containersForce = true;
-      containers = {
-        Personal = {
-          color = "blue";
-          icon = "fruit";
-          id = 0;
-        };
-        Work = {
-          color = "orange";
-          icon = "briefcase";
-          id = 1;
-        };
       };
 
       search = {
