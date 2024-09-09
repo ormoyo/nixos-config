@@ -2,7 +2,6 @@
 {
   imports =
     [
-      ./hardware-configuration.nix
       ./graphics.nix
       ./tools
       ./virtualization.nix
@@ -15,7 +14,6 @@
       fcitx5-gtk
     ];
   };
-
 
   services.logind.extraConfig = ''
     HandlePowerKey=hibernate

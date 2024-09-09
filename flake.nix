@@ -62,9 +62,9 @@
           modules = [
             ./hosts/${hostname}/configuration.nix
             ./hosts/${hostname}/hardware-configuration.nix
-            (import ./modules { inherit enableHomeManager; })
+            (import ./modules { inherit enableHomeManager; lib = pkgs.lib; })
 
-            { networking = { hostname = hostname; domain = domain; }; }
+            { networking = { hostName = hostname; domain = domain; }; }
 
             (sops hostname)
             index

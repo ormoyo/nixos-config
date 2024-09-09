@@ -17,7 +17,6 @@ in
       };
     };
 
-
     users.users = builtins.mapAttrs
       (n: v: {
         isNormalUser = true;
@@ -63,11 +62,11 @@ in
       package =
         if cfg.neovim.enableNightly
         then inputs.neovim-nightly-overlay.packages.${pkgs.system}.default
-        else pkgs.neovim;
+        else pkgs.neovim-unwrapped;
     };
 
     # time
-    services.automatic-timezoned.enable = !cfg.time.enable;
+    services.automatic-timezoned.enable = mkIf cfg.time.enable (cfg.time.timezone == null);
     time.timeZone = mkIf cfg.time.enable cfg.time.timezone;
 
     i18n = {

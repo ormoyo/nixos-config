@@ -34,7 +34,8 @@ in
         options = {
           enable = mkCommonEnableOption "common time settings";
           timezone = mkOption {
-            type = types.str;
+            type = types.nullOr types.str;
+            default = null;
           };
           locale = mkOption {
             type = types.str;
