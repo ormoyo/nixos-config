@@ -8,8 +8,8 @@
       image = "syncstorage-rs:latest";
       restart = "unless-stopped";
       networks = [ "frontend" ];
-      volumes = [ 
-        "${path}/data:/data" 
+      volumes = [
+        "${path}/data:/data"
       ];
       environment = {
         SYNC_HOST = "0.0.0.0";
@@ -23,7 +23,7 @@
       image = "docker.io/library/mysql:5.7";
       command = "--explicit_defaults_for_timestamp";
       restart = "unless-stopped";
-      volumes = [ 
+      volumes = [
         "${path}/sync-db:/var/lib/mysql"
       ];
       environment = {
@@ -36,8 +36,8 @@
     tokenserver-db.service = {
       image = "docker.io/library/mysql:5.7";
       command = "--explicit_defaults_for_timestamp";
-      restart = "unless-stopped"; 
-      volumes = [ 
+      restart = "unless-stopped";
+      volumes = [
         "${path}/token-db:/var/lib/mysql"
       ];
       environment = {
@@ -45,15 +45,6 @@
         MYSQL_DATABASE = "tokenserver";
         MYSQL_USER = "test";
         MYSQL_PASSWORD = "test";
-      };
-    };
-    mock-fxa-server.service = {
-      image = "app:build";
-      restart = "no"; 
-      entrypoint = "sh scripts/start_mock_fxa_server.sh";
-      environment = {
-        MOCK_FXA_SERVER_HOST = "0.0.0.0";
-        MOCK_FXA_SERVER_PORT = 6000;        
       };
     };
   };
