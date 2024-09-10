@@ -62,9 +62,9 @@
           modules = [
             ./hosts/${hostname}/configuration.nix
             ./hosts/${hostname}/hardware-configuration.nix
-            (import ./modules { inherit enableHomeManager; })
+            (import ./modules { inherit enableHomeManager; lib = pkgs.lib; })
 
-            { networking = { hostname = hostname; domain = domain; }; }
+            { networking = { hostName = hostname; domain = domain; }; }
 
             (sops hostname)
             index
@@ -72,8 +72,8 @@
             inputs.arion.nixosModules.arion
             inputs.nix-index-database.nixosModules.nix-index
             inputs.sops-nix.nixosModules.sops
-          ] ++ nixpkgs.lib.optionals enableHomeManager
-            [ inputs.home-manager.nixosModules.default ];
+          ] ++ nixpkgs.lib.optional enableHomeManager
+            inputs.home-manager.nixosModules.default;
         };
     in
     {

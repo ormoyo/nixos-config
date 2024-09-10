@@ -10,24 +10,9 @@ in
 {
   options.settings.home = {
     enable = mkHomeEnableOption "home manager";
-    power = mkOption {
-      default = { };
-      type = types.submodule {
-        options = {
-          enable = mkEnableOption "power settings";
-          enableThermald = mkOption {
-            type = types.bool;
-            default = false;
-          };
-          powerManager = mkOption {
-            type = types.enum [ "tlp" "power-profiles-daemon" "auto-cpufreq" ];
-            default = "tlp";
-          };
-        };
-      };
-    };
     hyprland.enable = mkHomeEnableOption "hyprland";
     xdg.enable = mkHomeEnableOption "xdg";
+    zsh.enable = mkHomeEnableOption "zsh";
   };
 }
 

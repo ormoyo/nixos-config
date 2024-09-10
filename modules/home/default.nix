@@ -17,11 +17,25 @@ in
       };
     };
 
-    users.users = mapAttrs
-      (n: v: { shell = pkgs.zsh; })
-      config.settings.common.users;
+    environment.localBinInPath = mkDefault true;
+    environment.pathsToLink =
+      optional cfg.zsh.enable "/share/zsh";
 
-    services.desktopManager.plasma6.enable = true;
+    users.users = mkIf cfg.zsh.enable (mapAttrs
+      (n: v: { shell = pkgs.zsh; })
+      config.settings.common.users);
+
+    home-manager = {
+      extraSpecialArgs = { inherit inputs; };
+      backupFileExtension = "backup";
+
+      useUserPackages = true;
+      useGlobalPkgs = true;
+
+      users = mapAttrs (n: v: (import ./home/home.nix) // (import ../../hosts/home/home.nix));
+    };
+
+    services.desktopManager.plasma6.enable = mkDefault true;
     services.displayManager.sessionPackages = mkIf cfg.hyprland.enable [ inputs.hyprland.packages.${pkgs.system}.hyprland ];
 
     # Pipewire
@@ -46,8 +60,9 @@ in
       portalPackage = inputs.hyprxdg.packages.${pkgs.system}.xdg-desktop-portal-hyprland;
     };
 
+    programs.steam.enable = mkDefault true;
     programs.adb.enable = true;
-    programs.zsh.enable = true;
+    programs.zsh.enable = cfg.zsh.enable;
 
     services.gnome.gnome-keyring.enable = true;
     security.pam.services.gdm.enableGnomeKeyring = true;
@@ -58,6 +73,17 @@ in
       extraPortals = with pkgs; [
         xdg-desktop-portal-gtk
       ];
+    };
+
+    nix.settings = {
+      substituters = [ "https://nix-gaming.cachix.org" ];
+      trusted-public-keys = [ "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4=" ];
+    };
+
+    nixpkgs.config.packageOverrides = pkgs: {
+      nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
+        inherit pkgs;
+      };
     };
   };
 }

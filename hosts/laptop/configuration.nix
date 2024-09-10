@@ -15,7 +15,6 @@
     ];
   };
 
-
   services.logind.extraConfig = ''
     HandlePowerKey=hibernate
     HandleLidSwitch=hibernate
@@ -71,51 +70,27 @@
   hardware.bluetooth.enable = true;
   services.xserver.libinput.enable = true;
 
-
-
-  environment.localBinInPath = true;
-  environment.pathsToLink = [ "/share/xdg-desktop-portal" "/share/applications" "/share/zsh" ];
-
-  home-manager = {
-    extraSpecialArgs = { inherit inputs; };
-    backupFileExtension = "backup";
-
-    useUserPackages = true;
-    useGlobalPkgs = true;
-
-    users = {
-      ormoyo = import ./home/home.nix;
-    };
-  };
-
-  services.udev.packages = [ pkgs.yubikey-personalization ];
-
   programs.gnupg.agent = {
     enable = true;
     enableSSHSupport = true;
   };
 
-  programs.steam = {
-    enable = true;
-    remotePlay.openFirewall = true;
-  };
-
-  security.pam.u2f.authFile = "/etc/u2f_keys";
-  security.pam.services = {
-    login.u2fAuth = true;
-    sudo.u2fAuth = true;
-  };
-
-  networking.nftables.enable = false;
-
-  nix.settings = {
-    substituters = [ "https://nix-gaming.cachix.org" ];
-    trusted-public-keys = [ "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4=" ];
-  };
-
-  nixpkgs.config.packageOverrides = pkgs: {
-    nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
-      inherit pkgs;
+  services.udev.packages = [ pkgs.yubikey-personalization libu2f-host ];
+  security.pam = {
+    services = {
+      login.u2fAuth = true;
+      sudo.u2fAuth = true;
+      gdm-password.u2fAuth = true;
+    };
+    u2f = {
+      enable = true;
+      cue = true;
+      origin = "pc.org";
+      appId = "pc.org";
+      authFile = pkgs.writeText "u2f_keys"
+        ''
+          ormoyo:VcS4hSXGlWEzsioA4BxgWoHDVGYn2rFdxyPJGYEmPvo+pajdUEdhHJPWlr7B4e3VhNAmpNMXKc/9SSJP6h+MCg==,SSmCTMgYrqorzGg5w0Pi6gAEx48aKoP63BP/TmyxRdzWX0SND0zNYZbFPw7ErhwFdYXaDcZAL5Vlsc86zwq+Lg==,es256,+presence:J8Zz4HGOhbUMdsfRkLNLBFrx30J1j8nN6um8B1ZPjGefc/jRVvhDH85c2RnUHP9K/5N2G3n5ETSgTvsgipcljg==,7rRjwIt/Ra65pHtAbKf+VzUdJu+MV7z9dVxVdg6A5UOAWa3spfmQDXiNwISKZt90xZ4plrbE/SEJTugj9jD0lw==,es256,+presence
+        '';
     };
   };
 
