@@ -13,7 +13,7 @@ in
     grub.enable = mkCommonEnableOption "grub bootloader";
 
     users = mkOption {
-      type = types.attrsOf (types.oneOf [ types.str types.sub ]);
+      type = types.attrsOf types.str;
       default = { ormoyo = "Ormoyo"; };
     };
 
