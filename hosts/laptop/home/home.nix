@@ -10,86 +10,14 @@ in
     ./shell.nix
   ];
 
-  home.username = "ormoyo";
-  home.homeDirectory = "/home/ormoyo";
-
   home.stateVersion = "23.11";
-  programs.home-manager.enable = true;
-
   home.packages = with pkgs; [
     (vesktop.override { withSystemVencord = false; })
 
-    ark
-    cpupower-gui
-    element-desktop
-    filelight
-    gaming-pkgs.wine-ge
-    gimp
-    gnome-extension-manager
-    gnome.gnome-tweaks
-    hakuneko
-    jetbrains.idea-community-bin
-    kalendar
-    keepassxc
-    libreoffice
     moonlight-qt
-    mpv
-    networkmanagerapplet
-    nwg-look
-    pavucontrol
-    pinta
-    planify
-    prismlauncher
-    protonmail-bridge
-    qalculate-gtk
-    qpwgraph
-    qbittorrent
-    steamPackages.steam-runtime
-    stremio
     subtitlecomposer
-    thunderbird
-    trashy
-    virtiofsd
-    vlc
-    wl-clipboard
     youtube-music
-    zoom
   ];
-
-  home.sessionPath = [ "$HOME/.cargo/bin" ];
-
-  #  services.flatpak.enableModule = true;
-  #  services.flatpak.remotes.flathub = "https://dl.flathub.org/repo/flathub.flatpakrepo";
-
-  #  services.flatpak.packages = [
-  #    "flathub:app/com.usebottles.bottles//stable"
-  #    "flathub:app/dev.vencord.Vesktop//stable"
-  #  ];
-
-  services.gnome-keyring.enable = true;
-  programs.kitty = {
-    enable = true;
-    shellIntegration.enableZshIntegration = true;
-
-    font = {
-      name = "Hermit";
-      size = 10;
-      package = pkgs.nerdfonts;
-    };
-  };
-
-  programs.btop = {
-    enable = true;
-    settings = {
-      color_theme = "HotPurpleTrafficLight.theme";
-    };
-  };
-
-  programs.neovim = {
-    enable = true;
-    package = inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;
-  };
-
 
   dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {
@@ -122,12 +50,6 @@ in
     Install.After = [ "network.target" "sound.target" ];
     Install.WantedBy = [ "default.target" ];
     Service.ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
-  };
-
-  systemd.user.services.protonmail-bridge = {
-    Unit.Description = "Runs protonmail-bridge";
-    Install.WantedBy = [ "default.target" ];
-    Service.ExecStart = "${pkgs.protonmail-bridge}/bin/protonmail-bridge -n";
   };
 }
 

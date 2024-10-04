@@ -1,9 +1,13 @@
-{ pkgs, lib, inputs, config, ... }:
-with lib;
-let
+{ pkgs, lib, inputs, config, hostname, ... }:
+let inherit (lib) attrNames listToAttrs mapAttrs mkDefault mkIf nameValuePair optional;
   cfg = config.settings.home;
+  users = map (name: nameValuePair name 
+      ((import ./home.nix { inherit config inputs pkgs; username = name; }) // 
+      (import ../../hosts/${hostname}/home/home.nix { inherit config inputs pkgs; username = name; }))) 
+    (attrNames config.settings.common.users);
 in
 {
+  imports = [ ./options.nix ];
   config = mkIf cfg.enable {
     # Display manager
     services.xserver = {
@@ -21,9 +25,12 @@ in
     environment.pathsToLink =
       optional cfg.zsh.enable "/share/zsh";
 
-    users.users = mkIf cfg.zsh.enable (mapAttrs
-      (n: v: { shell = pkgs.zsh; })
-      config.settings.common.users);
+    users.users = mapAttrs
+      (n: v: { 
+        shell = if cfg.zsh.enable then pkgs.zsh else null;
+        extraGroups = [ "adbuser" ]; 
+      })
+      config.settings.common.users;
 
     home-manager = {
       extraSpecialArgs = { inherit inputs; };
@@ -32,7 +39,7 @@ in
       useUserPackages = true;
       useGlobalPkgs = true;
 
-      users = mapAttrs (n: v: (import ./home/home.nix) // (import ../../hosts/home/home.nix));
+      users = listToAttrs users; 
     };
 
     services.desktopManager.plasma6.enable = mkDefault true;
