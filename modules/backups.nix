@@ -1,6 +1,5 @@
 { config, lib, ... }:
-with lib;
-let
+let inherit (lib) concatMapAttrs flatten mapAttrs mapAttrsToList mkEnableOption mkIf mkOption optionals types;
   cfg = config.services.backups;
   defaultExcludePatterns = [
     ".git"

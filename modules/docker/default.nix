@@ -1,6 +1,7 @@
 { pkgs, config, lib, ... }:
-with lib;
-let
+
+let inherit (lib) flatten hasAttrByPath listToAttrs mkEnableOption mkIf mkOption nameValuePair optional optionals partition types;
+
   docker = config.virtualisation.oci-containers.backend;
   dockerBin = "${pkgs.${docker}}/bin/${docker}";
 
@@ -29,7 +30,7 @@ let
       inherit lib;
     };
   create_service = name:
-    lib.nameValuePair
+    nameValuePair
       name
       {
         serviceName = name;
@@ -37,35 +38,35 @@ let
           (import_file name);
       };
   create_option = name:
-    lib.nameValuePair
+    nameValuePair
       name
-      (lib.mkOption
+      (mkOption
         {
           default = { };
-          type = lib.types.submodule {
+          type = types.submodule {
             options = {
-              enable = lib.mkOption {
-                type = lib.types.bool;
+              enable = mkOption {
+                type = types.bool;
                 default = true;
               };
 
-              serviceName = lib.mkOption {
-                type = lib.types.str;
+              serviceName = mkOption {
+                type = types.str;
                 default = name;
               };
 
-              dataDir = lib.mkOption {
-                type = lib.types.str;
+              dataDir = mkOption {
+                type = types.str;
                 default = "${cfg.dataPath}/${name}";
               };
 
-              backups.exclude = lib.mkOption {
-                type = lib.types.listOf lib.types.str;
+              backups.exclude = mkOption {
+                type = types.listOf types.str;
                 default = [ ];
               };
 
-              user = lib.mkOption {
-                type = with lib.types; either str ints.unsign;
+              user = mkOption {
+                type = with types; either str ints.unsign;
                 default = cfg.user;
               };
             };

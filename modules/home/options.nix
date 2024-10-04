@@ -1,8 +1,7 @@
 { lib, ... }:
-with lib;
-let
-  mkHomeEnableOption = name: lib.mkOption {
-    type = lib.types.bool;
+let inherit (lib) mkOption options types;
+  mkHomeEnableOption = name: mkOption {
+    type = types.bool;
     default = true;
     description = "Whether to enable ${name}";
   };

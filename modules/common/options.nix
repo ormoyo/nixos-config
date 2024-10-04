@@ -1,8 +1,7 @@
 { lib, ... }:
-with lib;
-let 
-  mkCommonEnableOption = name: lib.mkOption {
-    type = lib.types.bool;
+let inherit (lib) mkEnableOption mkOption options types;
+  mkCommonEnableOption = name: mkOption {
+    type = types.bool;
     default = true;
     description = "Whether to enable ${name}";
   };
@@ -19,7 +18,7 @@ in
 
     neovim = mkOption {
       default = { };
-      type = with types; submodule {
+      type = types.submodule {
         options = {
           enable = mkCommonEnableOption "neovim";
           enableNightly = mkEnableOption "setting neovim to nightly version";
@@ -30,7 +29,7 @@ in
     packages.enable = mkCommonEnableOption "common packages";
     time = mkOption {
       default = { };
-      type = with types; submodule {
+      type = types.submodule {
         options = {
           enable = mkCommonEnableOption "common time settings";
           timezone = mkOption {
