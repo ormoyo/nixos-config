@@ -13,6 +13,7 @@ in
 
   home.packages = with pkgs; [
     (vesktop.override { withSystemVencord = false; })
+    inputs.nli.packages.${pkgs.system}.nli
 
     ark
     cpupower-gui

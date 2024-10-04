@@ -21,6 +21,10 @@
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     nh.url = "github:viperML/nh";
     nix-gaming.url = "github:fufexan/nix-gaming";
+    nil = {
+      url = "github:oxalica/nil";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -48,25 +52,17 @@
           enableZshIntegration = nixpkgs.lib.mkDefault true;
         };
       };
-      sops = name: {
-        sops.defaultSopsFile = nixpkgs.lib.mkDefault ./secrets/${name}.yaml;
-        sops.defaultSopsFormat = nixpkgs.lib.mkDefault "yaml";
-
-        sops.age.keyFile = nixpkgs.lib.mkDefault "/var/lib/sops-nix/key.txt";
-      };
 
       mkSystem = { pkgs, hostname, enableHomeManager ? false }:
         pkgs.lib.nixosSystem {
           system = system;
-          specialArgs = { inherit inputs; };
+          specialArgs = { inherit inputs hostname enableHomeManager; };
           modules = [
             ./hosts/${hostname}/configuration.nix
             ./hosts/${hostname}/hardware-configuration.nix
-            (import ./modules { inherit enableHomeManager; lib = pkgs.lib; })
+            ./modules
 
             { networking = { hostName = hostname; domain = domain; }; }
-
-            (sops hostname)
             index
 
             inputs.arion.nixosModules.arion
