@@ -75,7 +75,7 @@
     enableSSHSupport = true;
   };
 
-  services.udev.packages = [ pkgs.yubikey-personalization libu2f-host ];
+  services.udev.packages = with pkgs; [ yubikey-personalization libu2f-host ];
   security.pam = {
     services = {
       login.u2fAuth = true;
