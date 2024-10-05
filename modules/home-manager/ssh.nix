@@ -1,5 +1,5 @@
 { lib, config, ... }:
-let inherit (lib) listToAttrs mkOption nameValuePair options types;
+let inherit (lib) listToAttrs mkIf mkOption nameValuePair options types;
   configs = config.programs.ssh.configs;
 in
 {
