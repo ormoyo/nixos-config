@@ -1,12 +1,13 @@
-{ name, path, id, ... }:
+{ name, path, id, getSecret, ... }:
 let
-  PG_PASS = "HVyLjeV+9cA/ZYtUr4DFpiBze7MYFGi/s5MFh4BFsXNdVdnU";
   SECRET_KEY = "Soy0ltOLAr4cyEnI4XD/EV2zPVZ+YFSN8iPbL+Xtxn9EyCm23i3vCKH4sORole8CTAWVfs5moVIzVh1K";
 in {
   project.name = name;
   host.uid = id;
 
   custom.backups.exclude = [ "redis" ];
+  custom.secrets = [ "secret-key" ];
+
   services = {
     server.service = {
       container_name = name;
@@ -19,13 +20,12 @@ in {
         "${path}/media:/media" 
         "${path}/custom-templates:/templates" 
       ];
+      env_file = [ (getSecret "secret-key") ];
       environment = {
         AUTHENTIK_REDIS__HOST = "redis";
         AUTHENTIK_POSTGRESQL__HOST = "postgres";
         AUTHENTIK_POSTGRESQL__USER = "authentik";
         AUTHENTIK_POSTGRESQL__NAME = "authentik";
-        AUTHENTIK_POSTGRESQL__PASSWORD = "${PG_PASS}";
-        AUTHENTIK_SECRET_KEY = "${SECRET_KEY}";
       };
     };
     worker.service = {
@@ -39,13 +39,12 @@ in {
         "${path}/certs:/certs" 
         "${path}/custom-templates:/templates" 
       ];
+      env_file = [ (getSecret "secret-key") ];
       environment = {
         AUTHENTIK_REDIS__HOST = "redis";
         AUTHENTIK_POSTGRESQL__HOST = "postgres";
         AUTHENTIK_POSTGRESQL__USER = "authentik";
         AUTHENTIK_POSTGRESQL__NAME = "authentik";
-        AUTHENTIK_POSTGRESQL__PASSWORD = "${PG_PASS}";
-        AUTHENTIK_SECRET_KEY = "${SECRET_KEY}";
       };
     };
     redis.service = {
@@ -59,9 +58,7 @@ in {
         retries = 5;
         timeout = "3s";
       };
-      volumes = [
-        "${path}/redis:/data"
-      ];
+      volumes = [ "${path}/redis:/data" ];
     };
     postgres.service = {
       image = "docker.io/library/postgres:12-alpine";
@@ -73,27 +70,12 @@ in {
         retries = 5;
         timeout = "5s";
       }; 
-      volumes = [ 
-        "${path}/postgres:/var/lib/postgresql/data"
-      ];
+      volumes = [ "${path}/postgres:/var/lib/postgresql/data" ];
       environment = {
         POSTGRES_DB = "authentik";
         POSTGRES_USER = "authentik";
-        POSTGRES_PASSWORD = "${PG_PASS}"; 
       };
     };
-    #db.service = {
-    #  image = "jc21/mariadb-aria:latest";
-    #  restart = "unless-stopped";
-    #  volumes = [ "${toString ./.}/mysql:/var/lib/mysql" ];
-    #  environment = {
-    #    MYSQL_ROOT_PASSWORD = "npm";
-    #    MYSQL_DATABASE = "npm";
-    #    MYSQL_USER = "npm";
-    #    MYSQL_PASSWORD = "npm";
-    #    MARIADB_AUTO_UPGRADE = "1";
-    #  };
-    #};
   };
   networks.frontend = {
     name = "main-nginx";
