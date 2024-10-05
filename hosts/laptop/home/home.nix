@@ -3,17 +3,8 @@ let
   gaming-pkgs = inputs.nix-gaming.packages.${pkgs.system};
 in
 {
-  imports = [
-    # inputs.nix-flatpak.homeManagerModules.default
-    ./desktop.nix
-    ./browser.nix
-    ./shell.nix
-  ];
-
   home.stateVersion = "23.11";
   home.packages = with pkgs; [
-    (vesktop.override { withSystemVencord = false; })
-
     moonlight-qt
     subtitlecomposer
     youtube-music

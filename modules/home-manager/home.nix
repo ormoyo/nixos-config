@@ -4,6 +4,10 @@ let
 in
 {
   imports = [
+    ./browser.nix
+    ./desktop.nix
+    ./shell.nix
+    ./ssh.nix
   ];
 
   home.username = username;

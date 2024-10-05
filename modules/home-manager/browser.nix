@@ -1,4 +1,4 @@
-{pkgs, inputs, ...}:
+{ pkgs, inputs, ... }:
 {
   home.activation = {
     create-symlink = ''
@@ -17,18 +17,16 @@
       categories = [ "Application" "Network" "WebBrowser" ];
       mimeType = [ "text/html" "text/xml" ];
     };
-  }; 
+  };
 
-  home.packages = [pkgs.firefoxpwa pkgs.ungoogled-chromium]; 
+  home.packages = [ pkgs.firefoxpwa pkgs.ungoogled-chromium ];
   programs.firefox = {
     enable = true;
     package = (pkgs.librewolf.override {
-      nativeMessagingHosts = [pkgs.firefoxpwa];
+      nativeMessagingHosts = [ pkgs.firefoxpwa ];
     });
 
-    policies = {
-      DisableFirefoxAccounts = false;
-    };
+    policies.DisableFirefoxAccounts = false;
     profiles.default = {
       settings = {
         "privacy.clearOnShutdown.history" = false;
@@ -50,7 +48,7 @@
         privateDefault = "Searx";
       };
     };
-    profiles.japanese = {  
+    profiles.japanese = {
       id = 1;
       settings = {
         "privacy.clearOnShutdown.history" = false;
