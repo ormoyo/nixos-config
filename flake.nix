@@ -56,11 +56,11 @@
       mkSystem = { pkgs, hostname, enableHomeManager ? false }:
         pkgs.lib.nixosSystem {
           system = system;
-          specialArgs = { inherit inputs hostname enableHomeManager; };
+          specialArgs = { inherit inputs hostname; };
           modules = [
             ./hosts/${hostname}/configuration.nix
             ./hosts/${hostname}/hardware-configuration.nix
-            ./modules
+            ./modules/nixos
 
             { networking = { hostName = hostname; domain = domain; }; }
             index
@@ -68,8 +68,11 @@
             inputs.arion.nixosModules.arion
             inputs.nix-index-database.nixosModules.nix-index
             inputs.sops-nix.nixosModules.sops
-          ] ++ nixpkgs.lib.optional enableHomeManager
-            inputs.home-manager.nixosModules.default;
+          ] ++ nixpkgs.lib.optionals enableHomeManager
+            [
+              ./modules/home-manager
+              inputs.home-manager.nixosModules.default
+            ];
         };
     in
     {

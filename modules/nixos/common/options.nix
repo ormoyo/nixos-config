@@ -5,7 +5,7 @@ let inherit (lib) mkEnableOption mkOption options types;
     default = true;
     description = "Whether to enable ${name}";
   };
-in 
+in
 {
   options.settings.common = {
     enable = mkCommonEnableOption "common settings";

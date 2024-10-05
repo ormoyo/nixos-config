@@ -1,7 +1,8 @@
 { cfg, lib, ... }@attrs:
 let inherit (lib) mkIf;
-in {
-  imports = [ ./options.nix ./sops.nix (import ./time.nix {inherit cfg lib;}) (import ./programs.nix {inherit (attrs) cfg lib pkgs inputs;}) ];
+in
+{
+  imports = [ ./options.nix ./sops.nix (import ./time.nix { inherit cfg lib; }) (import ./programs.nix { inherit (attrs) cfg lib pkgs inputs; }) ];
   config = mkIf cfg.enable {
     boot.loader = mkIf cfg.grub.enable {
       efi = {

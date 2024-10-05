@@ -1,6 +1,7 @@
-{ hostname, lib, ... }: 
+{ hostname, lib, ... }:
 let inherit (lib) mkDefault;
-in {
+in
+{
   sops = {
     age.keyFile = mkDefault "/var/lib/sops-nix/key.txt";
 

@@ -1,6 +1,7 @@
 { cfg, lib, ... }:
 let inherit (lib) mkIf;
-in {
+in
+{
   services.automatic-timezoned.enable = mkIf cfg.time.enable (cfg.time.timezone == null);
   time.timeZone = mkIf cfg.time.enable cfg.time.timezone;
 
