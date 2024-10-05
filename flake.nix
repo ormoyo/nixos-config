@@ -77,7 +77,6 @@
     in
     {
       home-manager.sharedModules = [
-        inputs.sops-nix.homeManagerModules.sops
         inputs.hyprcursor-phinger.homeManagerModules.hyprcursor-phinger
         inputs.nix-index-database.hmModules.nix-index
         index

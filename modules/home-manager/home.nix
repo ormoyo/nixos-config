@@ -1,9 +1,12 @@
-{ pkgs, inputs, username, config, ... }:
+{ pkgs, inputs, username, config, hostname, ... }:
 let
   gaming-pkgs = inputs.nix-gaming.packages.${pkgs.system};
 in
 {
   imports = [
+    (import ../nixos/common/sops.nix {inherit (pkgs) lib hostname;})
+    inputs.sops-nix.homeManagerModules.sops
+
     ./browser.nix
     ./desktop.nix
     ./shell.nix
@@ -38,7 +41,6 @@ in
     qalculate-gtk
     qbittorrent
     qpwgraph
-    steamPackages.steam-runtime
     stremio
     thunderbird
     trashy
