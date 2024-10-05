@@ -10,10 +10,7 @@
       restart = "unless-stopped";
       networks = [ "default" "cloudflare-tunnel" "frontend" ];
       depends_on = [ "db" ];
-      volumes = [
-        "${path}/data:/data"
-      ];
-      environment = { };
+      volumes = [ "${path}/data:/data" ];
     };
 
     db.service = {
@@ -25,7 +22,6 @@
       environment = {
         POSTGRES_DATABASE = "matrix";
         POSTGRES_USER = "matrix";
-        POSTGRES_PASSWORD = "xa8hM86YWIGFzIRLdshxJEZ7t69ZzMrcyA0KD";
       };
     };
 
@@ -43,5 +39,5 @@
     external = true;
   };
 
-  networks.cloudflare-tunnel = {  };
+  networks.cloudflare-tunnel = { };
 }
