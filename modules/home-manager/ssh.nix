@@ -1,23 +1,37 @@
 { lib, config, ... }:
 let inherit (lib) listToAttrs mkIf mkOption nameValuePair options types;
-  configs = config.programs.ssh.configs;
 in
 {
-  options.programs.ssh.configs = mkOption {
-    type = types.listOf types.str;
-    default = [ ];
+  options.programs.ssh = {
+    configs = mkOption {
+      type = types.listOf types.str;
+      default = [ ];
+    };
+
+    keys = mkOption {
+      type = types.listOf types.str;
+      default = [ ];
+    };
   };
 
   config =
     let
-      secrets = map
+      configs = config.programs.ssh.configs;
+      keys = config.programs.ssh.keys;
+      secrets = (map
         (name: nameValuePair name {
           owner = "0400";
           path = "${config.home.homeDirectory}/.ssh/config.d/${name}";
         })
-        configs;
+        configs)
+      ++ (map
+        (name: nameValuePair name {
+          owner = "0400";
+          path = "${config.home.homeDirectory}/.ssh/${name}";
+        })
+        keys);
     in
-    mkIf (configs != [ ]) {
+    mkIf (secrets != [ ]) {
       programs.ssh.includes = [ "config.d/*" ];
       sops.secrets = listToAttrs secrets;
     };
