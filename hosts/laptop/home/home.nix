@@ -17,6 +17,25 @@ in
     };
   };
 
+  programs.ssh = {
+    enable = true;
+    configs = [
+      "github"
+      "router"
+      "desktop"
+      "server"
+    ];
+    keys = [
+      "github"
+      "router1"
+      "router2"
+      "pc1"
+      "pc2"
+      "server1"
+      "server2"
+    ];
+  };
+
 
   accounts.email.accounts = {
     ormoyo = {
