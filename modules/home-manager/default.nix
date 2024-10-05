@@ -1,9 +1,10 @@
 { pkgs, lib, inputs, config, hostname, ... }:
 let inherit (lib) attrNames listToAttrs mapAttrs mkDefault mkIf nameValuePair optional;
   cfg = config.settings.home;
-  users = map (name: nameValuePair name 
-      ((import ./home.nix { inherit config inputs pkgs; username = name; }) // 
-      (import ../../hosts/${hostname}/home/home.nix { inherit config inputs pkgs; username = name; }))) 
+  users = map
+    (name: nameValuePair name
+      ((import ./home.nix { inherit config hostname inputs pkgs; username = name; }) //
+        (import ../../hosts/${hostname}/home/home.nix { inherit config inputs pkgs; username = name; })))
     (attrNames config.settings.common.users);
 in
 {
@@ -26,9 +27,9 @@ in
       optional cfg.zsh.enable "/share/zsh";
 
     users.users = mapAttrs
-      (n: v: { 
+      (n: v: {
         shell = if cfg.zsh.enable then pkgs.zsh else null;
-        extraGroups = [ "adbuser" ]; 
+        extraGroups = [ "adbuser" ];
       })
       config.settings.common.users;
 
@@ -39,7 +40,7 @@ in
       useUserPackages = true;
       useGlobalPkgs = true;
 
-      users = listToAttrs users; 
+      users = listToAttrs users;
     };
 
     services.desktopManager.plasma6.enable = mkDefault true;
@@ -67,7 +68,27 @@ in
       portalPackage = inputs.hyprxdg.packages.${pkgs.system}.xdg-desktop-portal-hyprland;
     };
 
-    programs.steam.enable = mkDefault true;
+    programs.steam = {
+      enable = true;
+      package = mkDefault (steam.override {
+        extraPkgs = pkgs: with pkgs; [
+          xorg.libXcursor
+          xorg.libXi
+          xorg.libXinerama
+          xorg.libXScrnSaver
+          libpng
+          libpulseaudio
+          libvorbis
+          stdenv.cc.cc.lib
+          libkrb5
+          keyutils
+        ];
+      });
+      extraPackages = with pkgs; [
+        mangohud
+        gamescope
+      ];
+    };
     programs.adb.enable = true;
     programs.zsh.enable = cfg.zsh.enable;
 

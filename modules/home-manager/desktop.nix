@@ -25,20 +25,6 @@
 
   home.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "FantasqueSansMono" "Hermit" ]; })
-    (steam.override {
-      extraPkgs = pkgs: with pkgs; [
-        xorg.libXcursor
-        xorg.libXi
-        xorg.libXinerama
-        xorg.libXScrnSaver
-        libpng
-        libpulseaudio
-        libvorbis
-        stdenv.cc.cc.lib
-        libkrb5
-        keyutils
-      ];
-    })
 
     inputs.hyprlock.packages.${pkgs.system}.hyprlock
     inputs.hypridle.packages.${pkgs.system}.hypridle
@@ -47,8 +33,6 @@
     inputs.hyprcursor-phinger.packages.${pkgs.system}.hyprcursor-phinger
 
     protonup-qt
-    mangohud
-    gamescope
 
     appimage-run
     blueberry
