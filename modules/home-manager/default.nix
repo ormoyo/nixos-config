@@ -70,7 +70,7 @@ in
 
     programs.steam = {
       enable = true;
-      package = mkDefault (steam.override {
+      package = mkDefault (pkgs.steam.override {
         extraPkgs = pkgs: with pkgs; [
           xorg.libXcursor
           xorg.libXi
