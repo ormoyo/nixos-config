@@ -19,22 +19,6 @@
     HandlePowerKey=hibernate
     HandleLidSwitch=hibernate
   '';
-  #  environment.gnome.excludePackages = (with pkgs; [
-  #    gnome-photos
-  #    gnome-tour
-  #  ]) ++ (with pkgs.gnome; [
-  #    cheese # webcam tool
-  #    gnome-music
-  #    gnome-terminal
-  #    # epiphany # web browser
-  #    geary # email reader
-  #    evince # document viewer
-  #    totem # video player
-  #    tali # poker game
-  #    iagno # go game
-  #    hitori # suoku game
-  #    atomix # puzzle game
-  #  ]);
 
   services.power-profiles-daemon.enable = false;
   services.thermald.enable = true;
@@ -68,12 +52,7 @@
   # };
 
   hardware.bluetooth.enable = true;
-  services.xserver.libinput.enable = true;
-
-  programs.gnupg.agent = {
-    enable = true;
-    enableSSHSupport = true;
-  };
+  services.libinput.enable = true;
 
   services.udev.packages = with pkgs; [ yubikey-personalization libu2f-host ];
   security.pam = {
