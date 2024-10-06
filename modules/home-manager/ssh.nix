@@ -20,13 +20,13 @@ in
       keys = config.programs.ssh.keys;
       secrets = (map
         (name: nameValuePair "ssh/configs/${name}" {
-          owner = "0400";
+          mode = "0400";
           path = "${config.home.homeDirectory}/.ssh/config.d/${name}";
         })
         configs)
       ++ (map
         (name: nameValuePair "ssh/keys/${name}" {
-          owner = "0400";
+          mode = "0400";
           path = "${config.home.homeDirectory}/.ssh/${name}";
         })
         keys);
