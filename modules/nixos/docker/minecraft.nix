@@ -13,7 +13,7 @@
         "${path}/data:/data"
       ];
       environment = {
-        EULE = "true";
+        EULA = "true";
         MAX_MEMORY = "4G";
         TYPE = "VANILLA";
       };
