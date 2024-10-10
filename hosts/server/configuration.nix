@@ -5,7 +5,8 @@
     openssh.authorizedKeys.keys = [
       "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIDYqb9ThU8mCA+5+6hdtESjMBFa6qnBMi85yabDiAezPAAAABHNzaDo= ormoyo@arch.nice.org"
       "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIHtPiDAln9vl7TaLTUfgl1vK4kmLBHDybLsLMNw9au4PAAAABHNzaDo= ormoyo@arch.nice.org"
-      "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIFgtYocIFObw1brKFrWyHh8AvgNgCfAGgDSQSkFPHtoHAAAABHNzaDo= ormoyo@whipi.pc.org"
+      "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIKqlg2zuqwOowyMdofApgZW2LVUuZTPG3b0mG0z8v0wOAAAABHNzaDo= ormoyo@laptop.pc.org"
+      "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIKo6r1FZPntiu1HByA3OUSX2O4konT62PLdp7RikrXXXAAAABHNzaDo= ormoyo@laptop.pc.org"
     ];
   };
 
