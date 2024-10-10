@@ -24,6 +24,7 @@
         AUTHENTIK_POSTGRESQL__HOST = "postgres";
         AUTHENTIK_POSTGRESQL__USER = "authentik";
         AUTHENTIK_POSTGRESQL__NAME = "authentik";
+        AUTHENTIK_POSTGRESQL__PASSWORD = "authentik";
       };
     };
     worker.service = {
@@ -43,6 +44,7 @@
         AUTHENTIK_POSTGRESQL__HOST = "postgres";
         AUTHENTIK_POSTGRESQL__USER = "authentik";
         AUTHENTIK_POSTGRESQL__NAME = "authentik";
+        AUTHENTIK_POSTGRESQL__PASSWORD = "authentik";
       };
     };
     redis.service = {
@@ -72,6 +74,7 @@
       environment = {
         POSTGRES_DB = "authentik";
         POSTGRES_USER = "authentik";
+        POSTGRES_PASSWORD = "authentik";
       };
     };
   };
