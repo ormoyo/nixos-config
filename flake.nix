@@ -41,33 +41,21 @@
   outputs = { self, nixpkgs, nixpkgs-stable, ... }@inputs:
     let
       system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
 
       domain = "pc.org";
-      index = {
-        programs.command-not-found.enable = nixpkgs.lib.mkDefault false;
-        programs.nix-index = {
-          enable = nixpkgs.lib.mkDefault true;
-          enableBashIntegration = nixpkgs.lib.mkDefault true;
-          enableZshIntegration = nixpkgs.lib.mkDefault true;
-        };
-      };
-
-      mkSystem = { pkgs, hostname, enableHomeManager ? false }:
-        pkgs.lib.nixosSystem {
+      mkSystem = { pkgs, hostname, stable ? false, enableHomeManager ? false }:
+        (if stable then nixpkgs-stable else nixpkgs).lib.nixosSystem {
           system = system;
-          specialArgs = { inherit inputs hostname; };
+          specialArgs = { inherit inputs; };
           modules = [
+            { networking = { hostName = hostname; domain = domain; }; }
+
             ./hosts/${hostname}/configuration.nix
             ./hosts/${hostname}/hardware-configuration.nix
             ./modules/nixos
 
-            { networking = { hostName = hostname; domain = domain; }; }
-            index
-
             inputs.arion.nixosModules.arion
             inputs.nix-index-database.nixosModules.nix-index
-            inputs.sops-nix.nixosModules.sops
           ] ++ nixpkgs.lib.optionals enableHomeManager
             [
               ./modules/home-manager
@@ -79,7 +67,6 @@
       home-manager.sharedModules = [
         inputs.hyprcursor-phinger.homeManagerModules.hyprcursor-phinger
         inputs.nix-index-database.hmModules.nix-index
-        index
       ];
 
       nixosConfigurations.laptop = mkSystem {
@@ -91,6 +78,7 @@
       nixosConfigurations.server = mkSystem {
         hostname = "server";
         pkgs = nixpkgs-stable;
+        stable = true;
       };
     };
 }
