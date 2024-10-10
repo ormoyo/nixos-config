@@ -8,7 +8,7 @@
       container_name = name;
       image = "matrixdotorg/synapse:latest";
       restart = "unless-stopped";
-      networks = [ "default" "cloudflare-tunnel" "frontend" ];
+      networks = [ "default""frontend" ];
       depends_on = [ "db" ];
       volumes = [ "${path}/data:/data" ];
     };
@@ -22,22 +22,24 @@
       environment = {
         POSTGRES_DATABASE = "matrix";
         POSTGRES_USER = "matrix";
+        POSTGRES_PASSWORD = "matrix";
       };
     };
 
-    cloudflare-tunnel.service = {
-      container_name = "cloudflare-tunnel";
-      image = "cloudflare/cloudflared";
+    turn-server.service = {
+      image = "ghcr.io/processone/eturnal:latest";
       restart = "unless-stopped";
-      command = "tunnel run";
-      networks = [ "cloudflare-tunnel" ];
-      env_file = [ (getSecret "tunnel-token") ];
+      volumes = [
+        {
+          type = "bind";
+          source = "${path}/eturnal.yaml";
+          target = "/etc/eturnal.yml:ro";
+        }
+      ];
     };
   };
   networks.frontend = {
     name = "main-nginx";
     external = true;
   };
-
-  networks.cloudflare-tunnel = { };
 }
