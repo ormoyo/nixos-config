@@ -1,7 +1,5 @@
 { name, path, id, getSecret, ... }:
-let
-  SECRET_KEY = "Soy0ltOLAr4cyEnI4XD/EV2zPVZ+YFSN8iPbL+Xtxn9EyCm23i3vCKH4sORole8CTAWVfs5moVIzVh1K";
-in {
+{
   project.name = name;
   host.uid = id;
 
