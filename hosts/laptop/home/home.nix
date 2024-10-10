@@ -1,7 +1,4 @@
 { pkgs, inputs, ... }:
-let
-  gaming-pkgs = inputs.nix-gaming.packages.${pkgs.system};
-in
 {
   home.stateVersion = "23.11";
   home.packages = with pkgs; [
@@ -26,7 +23,8 @@ in
       "server"
     ];
     keys = [
-      "github"
+      "github1"
+      "github2"
       "router1"
       "router2"
       "pc1"
