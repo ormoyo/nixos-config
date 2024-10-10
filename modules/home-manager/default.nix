@@ -1,10 +1,10 @@
-{ pkgs, lib, inputs, config, hostname, ... }:
-let inherit (lib) attrNames listToAttrs mapAttrs mkDefault mkIf nameValuePair optional;
+{ pkgs, lib, inputs, config, ... }:
+let
+  inherit (lib) attrNames listToAttrs mapAttrs mkDefault mkIf nameValuePair optional;
   cfg = config.settings.home;
   users = map
     (name: nameValuePair name
-      ((import ./home.nix { inherit config hostname inputs pkgs; username = name; }) //
-        (import ../../hosts/${hostname}/home/home.nix { inherit config inputs pkgs; username = name; })))
+      (import ./home.nix { inherit config inputs pkgs lib; username = name; }))
     (attrNames config.settings.common.users);
 in
 {
@@ -35,7 +35,7 @@ in
 
     home-manager = {
       extraSpecialArgs = { inherit inputs; };
-      backupFileExtension = "backup";
+      backupFileExtension = "backupfsfa";
 
       useUserPackages = true;
       useGlobalPkgs = true;
@@ -108,10 +108,15 @@ in
       trusted-public-keys = [ "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4=" ];
     };
 
-    nixpkgs.config.packageOverrides = pkgs: {
-      nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
-        inherit pkgs;
+    nixpkgs.config = {
+      packageOverrides = pkgs: {
+        nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
+          inherit pkgs;
+        };
       };
+      permittedInsecurePackages = [
+        "olm-3.2.16"
+      ];
     };
   };
 }

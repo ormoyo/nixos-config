@@ -1,11 +1,12 @@
-{ pkgs, inputs, username, config, hostname, ... }:
+{ pkgs, inputs, username, config, lib, ... }:
 let
   gaming-pkgs = inputs.nix-gaming.packages.${pkgs.system};
 in
 {
   imports = [
-    (import ../nixos/common/sops.nix {inherit (pkgs) lib hostname;})
-    inputs.sops-nix.homeManagerModules.sops
+    (import  ../nixos/common/sops.nix {inherit config inputs lib; homeManager = true;})
+    
+    ../../hosts/${config.networking.hostName}/home/home.nix
 
     ./browser.nix
     ./desktop.nix
@@ -20,7 +21,7 @@ in
 
   home.packages = with pkgs; [
     (vesktop.override { withSystemVencord = false; })
-    inputs.nli.packages.${pkgs.system}.nli
+    inputs.nil.packages.${pkgs.system}.nil
 
     ark
     cpupower-gui
@@ -33,6 +34,7 @@ in
     libreoffice
     mpv
     networkmanagerapplet
+    nheko
     nwg-look
     pavucontrol
     planify
@@ -75,11 +77,6 @@ in
     settings = {
       color_theme = "HotPurpleTrafficLight.theme";
     };
-  };
-
-  programs.neovim = {
-    enable = true;
-    package = inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;
   };
 
   systemd.user.services.protonmail-bridge = {

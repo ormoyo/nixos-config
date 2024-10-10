@@ -66,7 +66,7 @@ let inherit (lib) flatten hasAttrByPath listToAttrs mkEnableOption mkIf mkOption
               };
 
               user = mkOption {
-                type = with types; either str ints.unsign;
+                type = with types; either str ints.unsigned;
                 default = cfg.user;
               };
             };
@@ -84,7 +84,7 @@ in
     };
 
     user = mkOption {
-      type = with types; either str ints.unsign;
+      type = with types; either str ints.unsigned;
       default = 1000;
     };
 

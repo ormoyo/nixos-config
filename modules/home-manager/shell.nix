@@ -8,7 +8,6 @@
 
     initExtra = ''
       test -f ~/.dir_colors && eval $(dircolors ~/.dir_colors)
-      eval "$(direnv hook zsh)"
     '';
 
     shellAliases = {
@@ -50,13 +49,7 @@
   programs.autojump.enable = true;
   programs.zoxide.enable = true;
 
-  programs.direnv = {
-    enable = true;
-    nix-direnv.enable = true;
-  };
-
   home.packages = with pkgs; [
-    zsh-autosuggestions
     zsh-fast-syntax-highlighting
     nix-zsh-completions
   ];
