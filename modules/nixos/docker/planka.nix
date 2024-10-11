@@ -25,7 +25,7 @@
       restart = "unless-stopped";
       volumes = [ "${path}/database:/var/lib/postgresql/data" ];
       environment = {
-        POSTGRES_DATABASE = "planka";
+        POSTGRES_DB = "planka";
         POSTGRES_HOST_AUTH_METHOD = "trust";
       };
       healthcheck = {
