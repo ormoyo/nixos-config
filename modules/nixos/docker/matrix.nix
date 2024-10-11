@@ -32,8 +32,18 @@
       volumes = [
         {
           type = "bind";
-          source = "${path}/eturnal.yaml";
+          source = "${path}/turn/eturnal.yaml";
           target = "/etc/eturnal.yml:ro";
+        }
+        {
+          type = "bind";
+          source = "${path}/turn/tls/cert.pem";
+          target = "/etc/eturnal/tls/cert.pem:ro";
+        }
+        {
+          type = "bind";
+          source = "${path}/turn/tls/key.pem";
+          target = "/etc/eturnal/tls/key.pem:ro";
         }
       ];
     };
