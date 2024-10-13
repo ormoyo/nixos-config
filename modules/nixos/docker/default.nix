@@ -67,7 +67,7 @@ let inherit (lib) flatten hasAttrByPath listToAttrs lists mkEnableOption mkIf mk
                 default = cfg.user;
               };
             } //
-            (mkIf (hasAttrByPath [ "custom" "options" ] module.${name}) modules.${name}.custom.options);
+            (mkIf (hasAttrByPath [ "custom" "options" ] modules.${name}) modules.${name}.custom.options);
           };
       });
 
