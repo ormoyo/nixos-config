@@ -1,5 +1,5 @@
 { pkgs, config, lib, ... }:
-let inherit (lib) flatten hasAttrByPath listToAttrs lists mkEnableOption mkIf mkOption nameValuePair optional optionals partition types;
+let inherit (lib) attrByPath flatten hasAttrByPath listToAttrs lists mkEnableOption mkIf mkOption nameValuePair optional optionals partition types;
   docker = config.virtualisation.oci-containers.backend;
   dockerBin = "${pkgs.${docker}}/bin/${docker}";
 
@@ -67,7 +67,7 @@ let inherit (lib) flatten hasAttrByPath listToAttrs lists mkEnableOption mkIf mk
                 default = cfg.user;
               };
             } //
-            (mkIf (hasAttrByPath [ "custom" "options" ] modules.${name}) modules.${name}.custom.options);
+            (mkIf (hasAttrByPath [ "custom" "options" ] modules.${name}) (attrByPath ["custom" "options"] [] modules.${name} ));
           };
       });
 
