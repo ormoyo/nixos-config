@@ -66,9 +66,10 @@ let inherit (lib) flatten hasAttrByPath listToAttrs lists mkEnableOption mkIf mk
                 type = with types; either str ints.unsigned;
                 default = cfg.user;
               };
-            };
+            } //
+            (mkIf (hasAttrByPath [ "custom" "options" ] module.${name}) modules.${name}.custom.options);
           };
-        });
+      });
 
   options = builtins.map (name: create_option name) step2;
 in
