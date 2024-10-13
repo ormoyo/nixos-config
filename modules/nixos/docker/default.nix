@@ -1,7 +1,5 @@
 { pkgs, config, lib, ... }:
-
-let inherit (lib) flatten hasAttrByPath listToAttrs mkEnableOption mkIf mkOption nameValuePair optional optionals partition types;
-
+let inherit (lib) flatten hasAttrByPath listToAttrs lists mkEnableOption mkIf mkOption nameValuePair optional optionals partition types;
   docker = config.virtualisation.oci-containers.backend;
   dockerBin = "${pkgs.${docker}}/bin/${docker}";
 
@@ -9,7 +7,7 @@ let inherit (lib) flatten hasAttrByPath listToAttrs mkEnableOption mkIf mkOption
 
   dirFiles = builtins.attrNames (builtins.readDir ./.);
 
-  step1 = lib.lists.remove "default.nix" dirFiles;
+  step1 = lists.remove "default.nix" dirFiles;
   step2 = builtins.map (file: builtins.replaceStrings [ ".nix" ] [ "" ] file) step1;
 
   getUser = service: cfg.services.${service}.user;
@@ -20,6 +18,7 @@ let inherit (lib) flatten hasAttrByPath listToAttrs mkEnableOption mkIf mkOption
         if builtins.isString (getUser name)
         then config.users.users.${getUser name}.uid
         else (getUser name);
+      cfg = cfg.services.${name};
       path = cfg.services.${name}.dataDir;
       getSecret = secret:
         if secret == "TZ"
@@ -29,21 +28,19 @@ let inherit (lib) flatten hasAttrByPath listToAttrs mkEnableOption mkIf mkOption
       inherit config;
       inherit lib;
     };
-  create_service = name:
-    nameValuePair
-      name
-      {
-        serviceName = name;
-        settings = lib.filterAttrs (n: v: n != "custom")
-          (import_file name);
-      };
+
+  modules = listToAttrs (builtins.map (name: nameValuePair name (import_file name)) step2);
+  create_service = name: module: {
+    serviceName = name;
+    settings = lib.filterAttrs (n: v: n != "custom") module;
+  };
   create_option = name:
     nameValuePair
       name
-      (mkOption
-        {
-          default = { };
-          type = types.submodule {
+      (mkOption {
+        default = { };
+        type =
+          types.submodule {
             options = {
               enable = mkOption {
                 type = types.bool;
@@ -81,6 +78,7 @@ in
 
     dataPath = mkOption {
       type = types.str;
+      default = "/var/lib/docker";
     };
 
     user = mkOption {
@@ -93,7 +91,6 @@ in
       type = types.submodule {
         options = {
           enable = mkEnableOption "backing up docker dirs";
-
           time = mkOption {
             type = types.str;
           };
@@ -123,54 +120,49 @@ in
 
   config =
     let
-      enabledServices = (partition (file: cfg.services."${file}".enable) step2).right;
-      services = builtins.map (name: create_service name) enabledServices;
+      enabledModules = (partition (file: cfg.services.${file}.enable) step2).right;
+      services = builtins.mapAttrs (name: value: create_service name value) enabledModules;
 
-      exclusions =
-        flatten
-          (builtins.map
-            (name:
-              let
-                module = cfg.services.${name};
-                file = import_file name;
-                isBackupEnabled =
-                  if hasAttrByPath [ "custom" "backups" "enable" ] file
-                  then file.custom.backups.enable
-                  else true;
-                exclusions =
-                  optionals (hasAttrByPath [ "custom" "backups" "exclude" ] file)
-                    file.custom.backups.exclude ++
-                  optional (!isBackupEnabled) "**";
-              in
-              builtins.map (exclusion: "${module.dataDir}/${exclusion}")
-                (module.backups.exclude ++ exclusions)
-            )
-            enabledServices);
-
-      secrets = flatten (builtins.map
-        (name:
-          let
-            module = cfg.services.${name};
-            file = import_file name;
-            secrets =
-              optionals (hasAttrByPath [ "custom" "secrets" ] file)
-                file.custom.secrets;
-          in
-          builtins.map
-            (secret: nameValuePair "docker/${name}/${secret}" {
-              owner = module.user;
-              restartUnits = [ "${name}.service" ];
-            })
-            secrets
-        )
-        enabledServices);
+      exclusions = flatten (builtins.attrValues
+        (builtins.mapAttrs
+          (name: module:
+            let
+              isBackupEnabled =
+                if hasAttrByPath [ "custom" "backups" "enable" ] module
+                then module.custom.backups.enable
+                else true;
+              exclusions =
+                optionals (hasAttrByPath [ "custom" "backups" "exclude" ] module)
+                  module.custom.backups.exclude ++
+                optional (!isBackupEnabled) "**";
+            in
+            (cfg.services.${name}.backups.exclude ++ exclusions)
+          )
+          enabledModules));
+      paths = builtins.attrValues (builtins.mapAttrs (n: v: [ (cfg.services.${n}.dataDir) ] ++ cfg.services.${n}.extraPaths) enabledModules);
+      secrets = flatten (builtins.attrValues
+        (builtins.mapAttrs
+          (name: module:
+            let
+              secrets =
+                optionals (hasAttrByPath [ "custom" "secrets" ] module)
+                  module.custom.secrets;
+            in
+            builtins.map
+              (secret: nameValuePair "docker/${name}/${secret}" {
+                owner = cfg.services.${name}.user;
+                restartUnits = [ "${name}.service" ];
+              })
+              secrets
+          )
+          enabledModules));
     in
     mkIf cfg.enable {
       #  users.extraUsers.ormoyo.extraGroups = [ "podman" ];
       services.backups = mkIf cfg.backups.enable {
         enable = true;
         repos.docker = {
-          paths = [ (cfg.dataPath) ];
+          paths = paths;
           time = cfg.backups.time;
           timePersistent = cfg.backups.timePersistent;
           exclude = exclusions;
@@ -188,8 +180,6 @@ in
           projects = listToAttrs services;
         };
       };
-
-
 
       system.activationScripts = {
         mkNET = ''

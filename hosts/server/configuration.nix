@@ -12,7 +12,6 @@
 
   services.docker = {
     enable = true;
-    dataPath = "/mnt/disk2/docker";
     user = "ormoyo";
     backups = {
       enable = true;
