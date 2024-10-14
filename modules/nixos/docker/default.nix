@@ -1,5 +1,5 @@
 { pkgs, config, lib, ... }:
-let inherit (lib) attrByPath flatten hasAttrByPath listToAttrs lists mkEnableOption mkIf mkOption nameValuePair optional optionals partition types;
+let inherit (lib) attrByPath filterAttrs flatten hasAttrByPath lists mkEnableOption mkIf mkOption nameValuePair optional optionals partition types;
   docker = config.virtualisation.oci-containers.backend;
   dockerBin = "${pkgs.${docker}}/bin/${docker}";
 
@@ -29,11 +29,7 @@ let inherit (lib) attrByPath flatten hasAttrByPath listToAttrs lists mkEnableOpt
       inherit lib;
     };
 
-  modules = listToAttrs (builtins.map (name: nameValuePair name (import_file name)) step2);
-  create_service = name: module: {
-    serviceName = name;
-    settings = lib.filterAttrs (n: v: n != "custom") module;
-  };
+  modules = builtins.listToAttrs (builtins.map (name: nameValuePair name (import_file name)) step2);
   create_option = name:
     nameValuePair
       name
@@ -66,8 +62,13 @@ let inherit (lib) attrByPath flatten hasAttrByPath listToAttrs lists mkEnableOpt
                 type = with types; either str ints.unsigned;
                 default = cfg.user;
               };
+
+              extraPaths = mkOption {
+                type = types.listOf types.str;
+                default = [ ];
+              };
             } //
-            (mkIf (hasAttrByPath [ "custom" "options" ] modules.${name}) (attrByPath ["custom" "options"] [] modules.${name} ));
+            (mkIf (hasAttrByPath [ "custom" "options" ] modules.${name}) (attrByPath [ "custom" "options" ] { } modules.${name}));
           };
       });
 
@@ -114,15 +115,20 @@ in
       };
 
       type = types.submodule {
-        options = listToAttrs options;
+        options = builtins.listToAttrs options;
       };
     };
   };
 
   config =
     let
-      enabledModules = (partition (file: cfg.services.${file}.enable) step2).right;
-      services = builtins.mapAttrs (name: value: create_service name value) enabledModules;
+      enabledModules = filterAttrs (name: value: cfg.services.${name}.enable) modules;
+      services = builtins.mapAttrs
+        (name: module: {
+          serviceName = name;
+          settings = filterAttrs (n: v: n != "custom") module;
+        })
+        enabledModules;
 
       exclusions = flatten (builtins.attrValues
         (builtins.mapAttrs
@@ -140,7 +146,7 @@ in
             (cfg.services.${name}.backups.exclude ++ exclusions)
           )
           enabledModules));
-      paths = builtins.attrValues (builtins.mapAttrs (n: v: [ (cfg.services.${n}.dataDir) ] ++ cfg.services.${n}.extraPaths) enabledModules);
+      paths = flatten (builtins.attrValues (builtins.mapAttrs (n: v: [ (cfg.services.${n}.dataDir) ] ++ cfg.services.${n}.extraPaths) enabledModules));
       secrets = flatten (builtins.attrValues
         (builtins.mapAttrs
           (name: module:
@@ -178,7 +184,7 @@ in
         docker.enable = true;
         arion = {
           backend = "docker";
-          projects = listToAttrs services;
+          projects = services;
         };
       };
 
