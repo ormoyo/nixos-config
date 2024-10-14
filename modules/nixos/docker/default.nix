@@ -80,7 +80,7 @@ in
 
     dataPath = mkOption {
       type = types.str;
-      default = "/var/lib/docker";
+      default = "/opt/docker";
     };
 
     user = mkOption {
