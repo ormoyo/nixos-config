@@ -71,7 +71,7 @@
 
         dirFiles = builtins.readDir ./shells;
         files = nixpkgs.lib.filterAttrs (n: v: v == "regular" || v == "symlink") dirFiles;
-        shells = nixpkgs.lib.mapAttrs' (n: v: nixpkgs.lib.nameValuePair (builtins.replaceStrings [ ".nix" ] [ "" ] n) (import ./shells/${n} { pkgs = nixpkgs; })) files;
+        shells = pkgs: pkgs.lib.mapAttrs' (n: v: pkgs.lib.nameValuePair (builtins.replaceStrings [ ".nix" ] [ "" ] n) (import ./shells/${n} { inherit pkgs; })) files;
     in
     {
       home-manager.sharedModules = [
@@ -90,6 +90,6 @@
         pkgs = nixpkgs-stable;
       };
 
-      devShells = forEachSupportedSystem ({ pkgs }: shells); 
+      devShells = forEachSupportedSystem ({ pkgs }: shells pkgs); 
     };
 }
