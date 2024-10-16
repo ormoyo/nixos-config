@@ -43,8 +43,8 @@
       system = "x86_64-linux";
 
       domain = "pc.org";
-      mkSystem = { pkgs, hostname, stable ? false, enableHomeManager ? false }:
-        (if stable then nixpkgs-stable else nixpkgs).lib.nixosSystem {
+      mkSystem = { pkgs, hostname, enableHomeManager ? false }:
+        pkgs.lib.nixosSystem {
           system = system;
           specialArgs = { inherit inputs; };
           modules = [
@@ -62,6 +62,16 @@
               inputs.home-manager.nixosModules.default
             ];
         };
+        supportedSystems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
+        forEachSupportedSystem = f: nixpkgs.lib.genAttrs supportedSystems (system: f {
+          pkgs = import nixpkgs {
+            inherit system;
+          };
+        });
+
+        dirFiles = builtins.readDir ./shells;
+        files = nixpkgs.lib.filterAttrs (n: v: v == "regular" || v == "symlink") dirFiles;
+        shells = nixpkgs.lib.mapAttrs' (n: v: nixpkgs.lib.nameValuePair (builtins.replaceStrings [ ".nix" ] [ "" ] n) (import ./shells/${n} { pkgs = nixpkgs; })) files;
     in
     {
       home-manager.sharedModules = [
@@ -78,7 +88,8 @@
       nixosConfigurations.server = mkSystem {
         hostname = "server";
         pkgs = nixpkgs-stable;
-        stable = true;
       };
+
+      devShells = forEachSupportedSystem ({ pkgs }: shells); 
     };
 }
