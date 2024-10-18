@@ -2,14 +2,13 @@
 {
   project.name = name;
   host.uid = id;
-
-  custom.secrets = [ "config" "secret-key" "url" ];
-
+  custom.secrets = [ "config" "secret-key" "url" ]; 
   services = {
     app.service = {
       container_name = name;
       image = "vikunja/vikunja";
       restart = "unless-stopped";
+      networks = [ "default" "frontend" ];
       depends_on = [ "db" ];
       volumes = [
         {
@@ -43,5 +42,10 @@
         timeout = "5s";
       };
     };
+  };
+
+  networks.frontend = {
+    name = "main-nginx";
+    external = true;
   };
 }
