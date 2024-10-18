@@ -14,7 +14,7 @@
         {
           type = "bind";
           source = getSecret "config";
-          target = "/app/vikunja/config.yml:ro";
+          target = "/etc/vikunja/config.yml";
         }
         "${path}/files:/app/vikunja/files"
       ];
