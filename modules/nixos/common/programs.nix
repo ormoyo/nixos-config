@@ -27,7 +27,7 @@
     package = inputs.nh.packages.${pkgs.system}.nh;
     clean.enable = true;
     clean.extraArgs = "--keep-since 5d --keep 9";
-    flake = toString ./..;
+    flake = /etc/nixos;
   };
 
   environment.sessionVariables.EDITOR = lib.mkIf cfg.neovim.enable "nvim";
