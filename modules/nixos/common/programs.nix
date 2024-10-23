@@ -24,7 +24,6 @@
   programs.nix-ld.enable = true;
   programs.nh = {
     enable = true;
-    package = inputs.nh.packages.${pkgs.system}.nh;
     clean.enable = true;
     clean.extraArgs = "--keep-since 5d --keep 9";
     flake = /etc/nixos;

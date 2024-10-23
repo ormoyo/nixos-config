@@ -26,11 +26,10 @@
   home.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "FantasqueSansMono" "Hermit" ]; })
 
-    inputs.hyprlock.packages.${pkgs.system}.hyprlock
-    inputs.hypridle.packages.${pkgs.system}.hypridle
-    inputs.hyprpicker.packages.${pkgs.system}.hyprpicker
-    inputs.hyprcursor.packages.${pkgs.system}.hyprcursor 
-    inputs.hyprcursor-phinger.packages.${pkgs.system}.hyprcursor-phinger
+    hyprlock
+    hypridle
+    hyprpicker
+    hyprcursor-phinger
 
     protonup-qt
 

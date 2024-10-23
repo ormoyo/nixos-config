@@ -21,7 +21,7 @@ in
 
   home.packages = with pkgs; [
     (vesktop.override { withSystemVencord = false; })
-    inputs.nil.packages.${pkgs.system}.nil
+    nil
 
     ark
     cpupower-gui

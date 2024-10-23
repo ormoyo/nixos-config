@@ -44,7 +44,7 @@ in
     };
 
     services.desktopManager.plasma6.enable = mkDefault true;
-    services.displayManager.sessionPackages = mkIf cfg.hyprland.enable [ inputs.hyprland.packages.${pkgs.system}.hyprland ];
+    services.displayManager.sessionPackages = mkIf cfg.hyprland.enable [ pkgs.hyprland ];
 
     # Pipewire
     security.rtkit.enable = true;
@@ -63,9 +63,7 @@ in
     # Programs
     programs.hyprland = mkIf cfg.hyprland.enable {
       enable = true;
-      package = inputs.hyprland.packages.${pkgs.system}.hyprland;
       xwayland.enable = true;
-      portalPackage = inputs.hyprxdg.packages.${pkgs.system}.xdg-desktop-portal-hyprland;
     };
 
     programs.steam = {
