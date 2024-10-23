@@ -10,17 +10,69 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    hyprcursor-phinger.url = "github:Jappie3/hyprcursor-phinger";
-    hyprcursor.url = "github:hyprwm/hyprcursor";
-    hypridle.url = "github:hyprwm/hypridle";
-    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
-    hyprlock.url = "github:hyprwm/hyprlock";
-    hyprpicker.url = "github:hyprwm/hyprpicker";
-    hyprxdg.url = "github:hyprwm/xdg-desktop-portal-hyprland";
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";  
+    };
+    hercules-ci-effects = { 
+      url = "github:hercules-ci/hercules-ci-effects";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+    };
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs-stable.follows = "nixpkgs-stable";
+      inputs.gitignore.follows = "gitignore";
+    };
+    gitignore = {
+      url = "github:hercules-ci/gitignore.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
-    nh.url = "github:viperML/nh";
-    nix-gaming.url = "github:fufexan/nix-gaming";
+
+    hyprlang = { 
+      url = "github:hyprwm/hyprlang";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.hyprutils.follows = "hyprutils";
+    };
+    hyprutils = {
+      url = "github:hyprwm/hyprutils";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    hyprcursor-phinger = { 
+      url = "github:Jappie3/hyprcursor-phinger"; 
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    hypridle = { 
+      url = "github:hyprwm/hypridle"; 
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.hyprlang.follows = "hyprlang";
+      inputs.hyprutils.follows = "hyprutils";
+    };
+    hyprland = {
+      url = "git+https://github.com/hyprwm/Hyprland?submodules=1"; 
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.hyprlang.follows = "hyprlang";
+      inputs.hyprutils.follows = "hyprutils";
+      inputs.pre-commit-hooks.follows = "git-hooks";
+    };
+    hyprlock = { 
+      url = "github:hyprwm/hyprlock"; 
+      inputs.nixpkgs.follows = "nixpkgs"; 
+      inputs.hyprlang.follows = "hyprlang";
+      inputs.hyprutils.follows = "hyprutils";
+    };
+    hyprpicker = { 
+      url = "github:hyprwm/hyprpicker"; 
+      inputs.nixpkgs.follows = "nixpkgs"; 
+      inputs.hyprutils.follows = "hyprutils";
+    };
+
+    nh = { 
+      url = "github:viperML/nh";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nil = {
       url = "github:oxalica/nil";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -29,13 +81,32 @@
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs-stable.follows = "nixpkgs-stable";
     };
 
-    arion.url = "github:hercules-ci/arion";
+    nix-gaming = {
+      url = "github:fufexan/nix-gaming"; 
+      inputs.nixpkgs.follows = "nixpkgs"; 
+      inputs.flake-parts.follows = "flake-parts";
+    };
+
+    arion = { 
+      url = "github:hercules-ci/arion";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.hercules-ci-effects.follows = "hercules-ci-effects";
+    };
+
+    neovim-nightly-overlay = { 
+      url ="github:nix-community/neovim-nightly-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.hercules-ci-effects.follows = "hercules-ci-effects";
+      inputs.git-hooks.follows = "git-hooks";
+    };
   };
 
   outputs = { self, nixpkgs, nixpkgs-stable, ... }@inputs:
@@ -43,12 +114,14 @@
       system = "x86_64-linux";
 
       domain = "pc.org";
+      overlays = [ inputs.hyprland.overlays.default inputs.nh.overlays.default ];
       mkSystem = { pkgs, hostname, enableHomeManager ? false }:
         pkgs.lib.nixosSystem {
           system = system;
           specialArgs = { inherit inputs; };
           modules = [
             { networking = { hostName = hostname; domain = domain; }; }
+            { nixpkgs.overlays = overlays; } 
 
             ./hosts/${hostname}/configuration.nix
             ./hosts/${hostname}/hardware-configuration.nix
