@@ -1,20 +1,22 @@
 { pkgs ? import <nixpkgs> }:
 pkgs.mkShell {
   buildInputs = with pkgs; [
-    openssl
-    pkg-config
-    rustc
     cargo
     cargo-deny
     cargo-edit
     cargo-watch
-    rust-analyzer
-    libudev-zero
+    clippy
     egl-wayland
-    wayland
     fontconfig
     freetype
     libGL
+    libudev-zero
+    openssl
+    pkg-config
+    rust-analyzer
+    rustc
+    rustfmt
+    wayland
   ];
 
   LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
