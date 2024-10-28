@@ -26,7 +26,7 @@
       };
     };
     db.service = {
-      image = "postgres:latest";
+      image = "postgres:17";
       restart = "unless-stopped";
       volumes = [ "${path}/database:/var/lib/postgresql/data" ];
       environment = {

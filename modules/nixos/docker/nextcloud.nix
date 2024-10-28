@@ -29,7 +29,7 @@
       ];
     };
     db.service = {
-      image = "postgres:latest";
+      image = "postgres:16";
       restart = "unless-stopped";
       volumes = [
         "${path}/database:/var/lib/postgresql/data"
