@@ -11,11 +11,6 @@
       volumes = [
         {
           type = "bind";
-          source = "${path}/filebrowser.json";
-          target = "/.filebrowser.json";
-        }
-        {
-          type = "bind";
           source = "${path}/filebrowser.db";
           target = "/database.db";
         }
