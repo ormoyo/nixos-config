@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
+    systems.url = "systems";
 
     home-manager = {
       url = "github:nix-community/home-manager/master";
@@ -12,7 +13,7 @@
 
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
-      inputs.nixpkgs-lib.follows = "nixpkgs";  
+      inputs.nixpkgs-lib.follows = "nixpkgs";
     };
     hercules-ci-effects = { 
       url = "github:hercules-ci/hercules-ci-effects";
@@ -30,15 +31,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-
     hyprlang = { 
       url = "github:hyprwm/hyprlang";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "systems";
       inputs.hyprutils.follows = "hyprutils";
     };
     hyprutils = {
       url = "github:hyprwm/hyprutils";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "systems";
     };
     hyprcursor-phinger = { 
       url = "github:Jappie3/hyprcursor-phinger"; 
@@ -53,6 +55,7 @@
     hyprland = {
       url = "git+https://github.com/hyprwm/Hyprland?submodules=1"; 
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "systems";
       inputs.hyprlang.follows = "hyprlang";
       inputs.hyprutils.follows = "hyprutils";
       inputs.pre-commit-hooks.follows = "git-hooks";
@@ -60,12 +63,14 @@
     hyprlock = { 
       url = "github:hyprwm/hyprlock"; 
       inputs.nixpkgs.follows = "nixpkgs"; 
+      inputs.systems.follows = "systems";
       inputs.hyprlang.follows = "hyprlang";
       inputs.hyprutils.follows = "hyprutils";
     };
     hyprpicker = { 
       url = "github:hyprwm/hyprpicker"; 
       inputs.nixpkgs.follows = "nixpkgs"; 
+      inputs.systems.follows = "systems";
       inputs.hyprutils.follows = "hyprutils";
     };
 
@@ -109,9 +114,9 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, systems, ... }@inputs:
     let
-      system = "x86_64-linux";
+      system = builtins.elemAt (import systems) 0;
 
       domain = "pc.org";
       overlays = [ inputs.hyprland.overlays.default inputs.nh.overlays.default ];
@@ -135,8 +140,7 @@
               inputs.home-manager.nixosModules.default
             ];
         };
-        supportedSystems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
-        forEachSupportedSystem = f: nixpkgs.lib.genAttrs supportedSystems (system: f {
+        forEachSupportedSystem = f: nixpkgs.lib.genAttrs (import systems) (system: f {
           pkgs = import nixpkgs {
             inherit system;
           };
