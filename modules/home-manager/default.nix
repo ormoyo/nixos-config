@@ -35,7 +35,7 @@ in
 
     home-manager = {
       extraSpecialArgs = { inherit inputs; };
-      backupFileExtension = "backupfsfa";
+      backupFileExtension = "backupfs";
 
       useUserPackages = true;
       useGlobalPkgs = true;

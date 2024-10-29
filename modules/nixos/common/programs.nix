@@ -26,7 +26,7 @@
     enable = true;
     clean.enable = true;
     clean.extraArgs = "--keep-since 5d --keep 9";
-    flake = /etc/nixos;
+    flake = "/etc/nixos";
   };
 
   environment.sessionVariables.EDITOR = lib.mkIf cfg.neovim.enable "nvim";
