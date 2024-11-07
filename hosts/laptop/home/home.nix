@@ -20,6 +20,7 @@
       "router"
       "desktop"
       "server"
+      "soft-git"
     ];
     keys = [
       "github1"
@@ -30,6 +31,8 @@
       "pc2"
       "server1"
       "server2"
+      "soft-git1"
+      "soft-git2"
     ];
   };
 
