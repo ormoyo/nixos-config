@@ -26,6 +26,20 @@
   };
 
   networking.firewall.allowedTCPPorts = [ 443 81 ];
+  services.minecraft-servers = {
+    enable = true;
+    eula = true;
+    servers = {
+      furryIL = {
+        package = pkgs.vanillaServers.vanilla-1_18;
+        serverProperties = {
+          server-port = 43000;
+          difficulty = 3;
+          max-players = 200;
+        };
+      };
+    };
+  };
 
   system.stateVersion = "23.11";
   powerManagement.powerUpCommands =

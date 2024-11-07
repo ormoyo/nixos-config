@@ -11,6 +11,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Libs for deduplications
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
@@ -31,6 +32,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Hyprland
     hyprlang = { 
       url = "github:hyprwm/hyprlang";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -74,6 +76,7 @@
       inputs.hyprutils.follows = "hyprutils";
     };
 
+    # Nixos addons
     nh = { 
       url = "github:viperML/nh";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -92,25 +95,30 @@
       inputs.nixpkgs-stable.follows = "nixpkgs-stable";
     };
 
-    nix-gaming = {
-      url = "github:fufexan/nix-gaming"; 
-      inputs.nixpkgs.follows = "nixpkgs"; 
-      inputs.flake-parts.follows = "flake-parts";
-    };
-
+    # Server
     arion = { 
       url = "github:hercules-ci/arion";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
       inputs.hercules-ci-effects.follows = "hercules-ci-effects";
     };
+    minecraft-server = {
+      url = "github:Infinidoge/nix-minecraft";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
+    # Other
     neovim-nightly-overlay = { 
       url ="github:nix-community/neovim-nightly-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
       inputs.hercules-ci-effects.follows = "hercules-ci-effects";
       inputs.git-hooks.follows = "git-hooks";
+    };
+    nix-gaming = {
+      url = "github:fufexan/nix-gaming"; 
+      inputs.nixpkgs.follows = "nixpkgs"; 
+      inputs.flake-parts.follows = "flake-parts";
     };
   };
 
@@ -119,7 +127,7 @@
       system = builtins.elemAt (import systems) 0;
 
       domain = "pc.org";
-      overlays = [ inputs.hyprland.overlays.default inputs.nh.overlays.default ];
+      overlays = [ inputs.hyprland.overlays.default inputs.nh.overlays.default inputs.minecraft-server.overlay ];
       mkSystem = { pkgs, hostname, enableHomeManager ? false }:
         pkgs.lib.nixosSystem {
           system = system;
@@ -134,6 +142,7 @@
 
             inputs.arion.nixosModules.arion
             inputs.nix-index-database.nixosModules.nix-index
+            inputs.minecraft-server.nixosModules.minecraft-servers
           ] ++ nixpkgs.lib.optionals enableHomeManager
             [
               ./modules/home-manager
