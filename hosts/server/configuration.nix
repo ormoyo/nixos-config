@@ -31,7 +31,8 @@
     eula = true;
     servers = {
       furryIL = {
-        package = pkgs.vanillaServers.vanilla-1_18;
+        autoStart = true;
+        package = pkgs.forgeServers.forge-1_20_1;
         serverProperties = {
           server-port = 43000;
           difficulty = 3;

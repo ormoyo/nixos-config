@@ -125,9 +125,15 @@
   outputs = { self, nixpkgs, nixpkgs-stable, systems, ... }@inputs:
     let
       system = builtins.elemAt (import systems) 0;
+      forgeServers = _: pkgs: { forgeServers = (pkgs.callPackage ./pkgs/forge-servers/default.nix { }); };
 
       domain = "pc.org";
-      overlays = [ inputs.hyprland.overlays.default inputs.nh.overlays.default inputs.minecraft-server.overlay ];
+      overlays = [ 
+        inputs.hyprland.overlays.default 
+        inputs.nh.overlays.default 
+        inputs.minecraft-server.overlay 
+        forgeServers
+      ];
       mkSystem = { pkgs, hostname, enableHomeManager ? false }:
         pkgs.lib.nixosSystem {
           system = system;
