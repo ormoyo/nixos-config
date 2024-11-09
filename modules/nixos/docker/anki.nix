@@ -2,6 +2,7 @@
 {
   project.name = name;
   host.uid = id;
+
   custom.secrets = [ "users" ];
   services = {
     app.service = {
@@ -9,9 +10,7 @@
       image = "zweizs/anki-sync-server";
       restart = "unless-stopped";
       networks = [ "frontend" ];
-      volumes = [ 
-        "${path}/data:/data" 
-      ];
+      volumes = [ "${path}/data:/data" ];
       env_file = [ (getSecret "users") ];
     };
   };

@@ -2,15 +2,15 @@
 {
   project.name = name;
   host.uid = id;
+
+  custom.secrets = [ "admin-token" "domain" "smtp" ];
   services = {
     app.service = {
       container_name = name;
       image = "vaultwarden/server:latest";
       restart = "unless-stopped";
       networks = [ "frontend" ];
-      volumes = [
-        "${path}/data:/data"
-      ];
+      volumes = [ "${path}/data:/data" ];
       env_file = [
         (getSecret "admin-token")
         (getSecret "domain")
@@ -27,5 +27,4 @@
     name = "main-nginx";
     external = true;
   };
-  custom.secrets = [ "admin-token" "domain" "smtp" ];
 }

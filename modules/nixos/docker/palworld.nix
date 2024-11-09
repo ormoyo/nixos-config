@@ -2,6 +2,8 @@
 {
   project.name = name;
   host.uid = id;
+
+  custom.secrets = [ "settings" ];
   services = {
     app.service = {
       container_name = name;
@@ -16,9 +18,7 @@
         "8211:8211/udp"
         "27015:27015/udp"
       ];
-      volumes = [
-        "${path}/data:/palworld"
-      ];
+      volumes = [ "${path}/data:/palworld" ];
       stop_grace_period = "30s";
     };
   };
@@ -27,5 +27,4 @@
     name = "main-nginx";
     external = true;
   };
-  custom.secrets = [ "settings" ];
 }

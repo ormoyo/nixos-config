@@ -20,10 +20,10 @@ in
       image = "docker.io/jc21/nginx-proxy-manager:latest";
       restart = "unless-stopped";
       ports = [ "443:443" "80:80" "81:81" ];
-      networks = ["frontend"];
+      networks = [ "frontend" ];
       volumes = [
-        "${path}/data:/data" 
-        "${path}/letsencrypt:/etc/letsencrypt" 
+        "${path}/data:/data"
+        "${path}/letsencrypt:/etc/letsencrypt"
         "${config.services.docker.services.nextcloud.dataDir}/data:/var/www/html"
       ];
     };

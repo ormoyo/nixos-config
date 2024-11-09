@@ -103,7 +103,7 @@ in
       systemd.tmpfiles.rules = [
         "d ${user.home}/.ssh 0700 ${user.name} ${user.group}"
       ] ++
-      (builtins.map (path: "A+ ${path} - - - - m::r-x,u:${config.users.users.backups.name}:r-x")
+      (builtins.map (path: "A+ ${path} - - - - m::r-x,u:${user.name}:r-x")
         (flatten (
           mapAttrsToList
             (name: value: cfg.repos.${name}.paths)

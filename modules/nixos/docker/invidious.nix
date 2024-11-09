@@ -2,6 +2,8 @@
 {
   project.name = name;
   host.uid = id;
+
+  custom.secrets = [ "config" "postgres" "invidious-url" ];
   services = {
     app.service = {
       container_name = name;
@@ -58,5 +60,4 @@
     name = "main-nginx";
     external = true;
   };
-  custom.secrets = [ "config" "postgres" "invidious-url" ];
 }

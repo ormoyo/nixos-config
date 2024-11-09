@@ -1,14 +1,13 @@
-{ name, path, id, getSecret, ... }:
+{ name, path, id, ... }:
 {
   project.name = name;
   host.uid = id;
-  custom.secrets = [ "tunnel-token" ];
   services = {
     app.service = {
       container_name = name;
       image = "matrixdotorg/synapse:latest";
       restart = "unless-stopped";
-      networks = [ "default""frontend" ];
+      networks = [ "default" "frontend" ];
       depends_on = [ "db" ];
       volumes = [ "${path}/data:/data" ];
     };
@@ -16,9 +15,7 @@
     db.service = {
       image = "postgres:16";
       restart = "unless-stopped";
-      volumes = [
-        "${path}/database:/var/lib/postgresql/data"
-      ];
+      volumes = [ "${path}/database:/var/lib/postgresql/data" ];
       environment = {
         POSTGRES_DATABASE = "matrix";
         POSTGRES_USER = "matrix";

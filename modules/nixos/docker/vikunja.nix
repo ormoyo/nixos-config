@@ -2,6 +2,7 @@
 {
   project.name = name;
   host.uid = id;
+
   custom.secrets = [ "config" "secret-key" "url" ]; 
   services = {
     app.service = {

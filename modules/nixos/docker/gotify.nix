@@ -1,4 +1,4 @@
-{ name, path, id, getSecret, ... }: 
+{ name, path, id, getSecret, ... }:
 {
   project.name = name;
   host.uid = id;
@@ -9,9 +9,7 @@
       restart = "unless-stopped";
       networks = [ "frontend" ];
       env_file = [ (getSecret "TZ") ];
-      volumes = [ 
-        "${path}/data:/data" 
-      ];
+      volumes = [ "${path}/data:/data" ];
     };
   };
   enableDefaultNetwork = false;

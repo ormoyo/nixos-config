@@ -9,9 +9,7 @@
       restart = "unless-stopped";
       networks = [ "default" "frontend" ];
       depends_on = [ "db" "cache" ];
-      volumes = [ 
-        "${path}/data:/var/www/html" 
-      ];
+      volumes = [ "${path}/data:/var/www/html" ];
       environment = {
         DB_HOST = "db";
         DB_PORT = "5432";
