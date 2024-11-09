@@ -35,7 +35,7 @@ in
 
     home-manager = {
       extraSpecialArgs = { inherit inputs; };
-      backupFileExtension = "backups";
+      backupFileExtension = "backupsgiojewtuieh";
 
       useUserPackages = true;
       useGlobalPkgs = true;
