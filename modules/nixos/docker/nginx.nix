@@ -1,7 +1,19 @@
-{ name, path, id, config, ... }:
+{ name, path, id, config, pkgs, ... }:
+let
+  docker = config.virtualisation.oci-containers.backend;
+  dockerBin = "${pkgs.${docker}}/bin/${docker}";
+in
 {
   project.name = name;
   host.uid = id;
+
+  custom.activationScripts = {
+    mkNET =
+      ''
+        ${dockerBin} network inspect main-nginx >/dev/null 2>&1 || ${dockerBin} network create main-nginx --subnet 172.20.0.0/16
+      '';
+  };
+
   services = {
     app.service = {
       container_name = name;

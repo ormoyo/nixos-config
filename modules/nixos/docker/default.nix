@@ -172,6 +172,13 @@ in
             (attrByPath [ "custom" "secrets" ] [ ] module))
         )
         enabledModules;
+
+      activations = concatMapAttrs
+        (name: module:
+          attrsets.mapAttrs'
+            (n: value: nameValuePair "docker-${name}-${n}" value)
+            (attrByPath [ "custom" "activationScripts" ] { } module))
+        enabledModules;
     in
     mkIf cfg.enable {
       #  users.extraUsers.ormoyo.extraGroups = [ "podman" ];
@@ -189,18 +196,14 @@ in
         "docker/TZ" = { mode = "0444"; };
       };
 
+      system.activationScripts = activations;
+
       virtualisation = {
         docker.enable = true;
         arion = {
           backend = "docker";
           projects = services;
         };
-      };
-
-      system.activationScripts = {
-        mkNET = ''
-          ${dockerBin} network inspect main-nginx >/dev/null 2>&1 || ${dockerBin} network create main-nginx --subnet 172.20.0.0/16
-        '';
       };
     };
 }
