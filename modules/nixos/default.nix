@@ -1,8 +1,11 @@
-{ config, pkgs, ... }@attrs:
+{ config, ... }@attrs:
+let
+  importModule = path: cfg: extra: import path (extra // { inherit config cfg; inherit (attrs) inputs lib pkgs; });
+in
 {
   imports = [
-    (import ./common { inherit (attrs) inputs lib; inherit pkgs config; cfg = config.settings.common; })
-    ./backups.nix
-    ./docker
+    (importModule ./common.nix config.settings.common)
+    (importModule ./docker config.services.docker { path = ./docker; })
+    (importModule ./backups.nix config.services.backups)
   ];
 }

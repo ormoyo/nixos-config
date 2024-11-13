@@ -1,9 +1,6 @@
-{ pkgs, config, lib, ... }:
+{ pkgs, config, cfg, lib, path, ... }:
 let inherit (lib) attrByPath attrsets concatMapAttrs filterAttrs flatten mkEnableOption mkIf mkOption nameValuePair optional removeSuffix splitString types;
-  cfg = config.services.docker;
-
-  dir = builtins.readDir ./.;
-
+  dir = builtins.readDir path;
   sepIfNo0 = sep: list: if (builtins.length list) > 0 then sep + (builtins.concatStringsSep sep list) else "";
 
   sortFiles = path: dir: sortFiles' path dir [ ];
