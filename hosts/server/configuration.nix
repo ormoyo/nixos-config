@@ -33,6 +33,9 @@
       furryIL = {
         autoStart = true;
         package = pkgs.forgeServers.forge-1_20_1;
+        symlinks = {
+          mods = ./servers/furryIL/mods;
+        };
         serverProperties = {
           server-port = 43000;
           difficulty = 3;

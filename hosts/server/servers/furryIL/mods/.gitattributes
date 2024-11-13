@@ -1,2 +1,1 @@
-*.yaml diff=sopsdiffer
 *.jar filter=lfs diff=lfs merge=lfs -text
