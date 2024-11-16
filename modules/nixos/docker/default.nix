@@ -52,6 +52,11 @@ let inherit (lib) attrByPath attrsets concatMapAttrs filterAttrs flatten mkEnabl
             default = true;
           };
 
+          autoStart = mkOption {
+            type = types.bool;
+            default = false;
+          };
+
           serviceName = mkOption {
             type = types.str;
             default = name;
@@ -176,6 +181,12 @@ in
             (n: value: nameValuePair "docker-${name}-${n}" value)
             (attrByPath [ "custom" "activationScripts" ] { } module))
         enabledModules;
+
+      systemd = builtins.mapAttrs
+        (name: module: mkIf (!cfg.services.${name}.autoStart) {
+          after = lib.mkForce [];
+        })
+        enabledModules;
     in
     mkIf cfg.enable {
       #  users.extraUsers.ormoyo.extraGroups = [ "podman" ];
@@ -194,6 +205,7 @@ in
       };
 
       system.activationScripts = activations;
+      systemd.services = systemd;
 
       virtualisation = {
         docker.enable = true;
