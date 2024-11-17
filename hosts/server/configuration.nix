@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ pkgs, ... }:
 {
   networking.interfaces.enp1s0.wakeOnLan.enable = true;
   users.users.ormoyo = {
@@ -18,6 +18,9 @@
       time = "Mon,Sat 02:05";
       timePersistent = true;
     };
+    services = {
+      palworld.autoStart = false;
+    };
   };
 
   services.openssh = {
@@ -31,7 +34,7 @@
     eula = true;
     servers = {
       furryIL = {
-        autoStart = true;
+        autoStart = false;
         package = pkgs.forgeServers.forge-1_20_1;
         symlinks = {
           mods = ./servers/furryIL/mods;
