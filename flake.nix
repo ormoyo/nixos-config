@@ -16,7 +16,7 @@
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
-    hercules-ci-effects = { 
+    hercules-ci-effects = {
       url = "github:hercules-ci/hercules-ci-effects";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
@@ -33,7 +33,7 @@
     };
 
     # Hyprland
-    hyprlang = { 
+    hyprlang = {
       url = "github:hyprwm/hyprlang";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.systems.follows = "systems";
@@ -44,40 +44,40 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.systems.follows = "systems";
     };
-    hyprcursor-phinger = { 
-      url = "github:Jappie3/hyprcursor-phinger"; 
+    hyprcursor-phinger = {
+      url = "github:Jappie3/hyprcursor-phinger";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    hypridle = { 
-      url = "github:hyprwm/hypridle"; 
+    hypridle = {
+      url = "github:hyprwm/hypridle";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.hyprlang.follows = "hyprlang";
       inputs.hyprutils.follows = "hyprutils";
     };
     hyprland = {
-      url = "git+https://github.com/hyprwm/Hyprland?submodules=1"; 
+      url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.systems.follows = "systems";
       inputs.hyprlang.follows = "hyprlang";
       inputs.hyprutils.follows = "hyprutils";
       inputs.pre-commit-hooks.follows = "git-hooks";
     };
-    hyprlock = { 
-      url = "github:hyprwm/hyprlock"; 
-      inputs.nixpkgs.follows = "nixpkgs"; 
+    hyprlock = {
+      url = "github:hyprwm/hyprlock";
+      inputs.nixpkgs.follows = "nixpkgs";
       inputs.systems.follows = "systems";
       inputs.hyprlang.follows = "hyprlang";
       inputs.hyprutils.follows = "hyprutils";
     };
-    hyprpicker = { 
-      url = "github:hyprwm/hyprpicker"; 
-      inputs.nixpkgs.follows = "nixpkgs"; 
+    hyprpicker = {
+      url = "github:hyprwm/hyprpicker";
+      inputs.nixpkgs.follows = "nixpkgs";
       inputs.systems.follows = "systems";
       inputs.hyprutils.follows = "hyprutils";
     };
 
     # Nixos addons
-    nh = { 
+    nh = {
       url = "github:viperML/nh";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -96,28 +96,34 @@
     };
 
     # Server
-    arion = { 
+    arion = {
       url = "github:hercules-ci/arion";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
       inputs.hercules-ci-effects.follows = "hercules-ci-effects";
     };
+
+    nix-docker-compose = {
+      url = "github:ormoyo/nix-docker-compose";
+      inputs.arion.follows = "arion";
+    };
+
     minecraft-server = {
       url = "github:Infinidoge/nix-minecraft";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Other
-    neovim-nightly-overlay = { 
-      url ="github:nix-community/neovim-nightly-overlay";
+    neovim-nightly-overlay = {
+      url = "github:nix-community/neovim-nightly-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
       inputs.hercules-ci-effects.follows = "hercules-ci-effects";
       inputs.git-hooks.follows = "git-hooks";
     };
     nix-gaming = {
-      url = "github:fufexan/nix-gaming"; 
-      inputs.nixpkgs.follows = "nixpkgs"; 
+      url = "github:fufexan/nix-gaming";
+      inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
     };
   };
@@ -128,42 +134,45 @@
       forgeServers = _: pkgs: { forgeServers = (pkgs.callPackage ./pkgs/forge-servers/default.nix { }); };
 
       domain = "pc.org";
-      overlays = [ 
-        inputs.hyprland.overlays.default 
-        inputs.nh.overlays.default 
-        inputs.minecraft-server.overlay 
+      overlays = [
+        inputs.hyprland.overlays.default
+        inputs.nh.overlays.default
+        inputs.minecraft-server.overlay
         forgeServers
       ];
       mkSystem = { pkgs, hostname, enableHomeManager ? false }:
         pkgs.lib.nixosSystem {
           system = system;
-          specialArgs = { inherit inputs; };
+          specialArgs = {
+            inherit inputs;
+            dockerPaths = [ ./modules/nixos/docker ];
+          };
           modules = [
             { networking = { hostName = hostname; domain = domain; }; }
-            { nixpkgs.overlays = overlays; } 
+            { nixpkgs.overlays = overlays; }
 
             ./hosts/${hostname}/configuration.nix
             ./hosts/${hostname}/hardware-configuration.nix
             ./modules/nixos
 
-            inputs.arion.nixosModules.arion
-            inputs.nix-index-database.nixosModules.nix-index
             inputs.minecraft-server.nixosModules.minecraft-servers
+            inputs.nix-docker-compose.nixosModules.nix-docker-compose
+            inputs.nix-index-database.nixosModules.nix-index
           ] ++ nixpkgs.lib.optionals enableHomeManager
             [
               ./modules/home-manager
               inputs.home-manager.nixosModules.default
             ];
         };
-        forEachSupportedSystem = f: nixpkgs.lib.genAttrs (import systems) (system: f {
-          pkgs = import nixpkgs {
-            inherit system;
-          };
-        });
+      forEachSupportedSystem = f: nixpkgs.lib.genAttrs (import systems) (system: f {
+        pkgs = import nixpkgs {
+          inherit system;
+        };
+      });
 
-        dirFiles = builtins.readDir ./shells;
-        files = nixpkgs.lib.filterAttrs (n: v: v == "regular" || v == "symlink") dirFiles;
-        shells = pkgs: pkgs.lib.mapAttrs' (n: v: pkgs.lib.nameValuePair (builtins.replaceStrings [ ".nix" ] [ "" ] n) (import ./shells/${n} { inherit pkgs; })) files;
+      dirFiles = builtins.readDir ./shells;
+      files = nixpkgs.lib.filterAttrs (n: v: v == "regular" || v == "symlink") dirFiles;
+      shells = pkgs: pkgs.lib.mapAttrs' (n: v: pkgs.lib.nameValuePair (pkgs.lib.removeSuffix ".nix" n) (import ./shells/${n} { inherit pkgs; })) files;
     in
     {
       home-manager.sharedModules = [
@@ -182,6 +191,6 @@
         pkgs = nixpkgs-stable;
       };
 
-      devShells = forEachSupportedSystem ({ pkgs }: shells pkgs); 
+      devShells = forEachSupportedSystem ({ pkgs }: shells pkgs);
     };
 }

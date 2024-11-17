@@ -5,7 +5,6 @@ in
 {
   imports = [
     (importModule ./common config.settings.common)
-    (importModule ./docker config.services.docker { path = ./docker; })
     (importModule ./backups.nix config.services.backups)
   ];
 }
