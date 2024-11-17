@@ -2,6 +2,8 @@
 {
   project.name = name;
   host.uid = id;
+
+  custom.secrets = [ "config" ];
   services = {
     prowlarr.service = {
       container_name = "prowlarr";
