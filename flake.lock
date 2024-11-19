@@ -684,11 +684,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1731776850,
-        "narHash": "sha256-gYciTuEcb43ewJXy73x3YxCsA8AsDQhjFvGNuzQi25Q=",
+        "lastModified": 1732003937,
+        "narHash": "sha256-JqF7eY/6qx2FAfmp176TJKLjt6e4tzoL/fwqMC7ZWkI=",
         "owner": "ormoyo",
         "repo": "nix-docker-compose",
-        "rev": "78af24949c6e6e38c456463b292d6e0034afc755",
+        "rev": "f336abb91902d4eb80bd09233e52e2e1f88cbe07",
         "type": "github"
       },
       "original": {
