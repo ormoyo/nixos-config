@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
   networking.interfaces.enp1s0.wakeOnLan.enable = true;
   users.users.ormoyo = {
@@ -16,11 +16,19 @@
     backups = {
       enable = true;
       time = "Mon,Sat 02:05";
-      timePersistent = true;
     };
     services = {
       palworld.autoStart = false;
     };
+  };
+  sops.secrets."ssh/backups/config" = {
+    mode = "0400";
+    owner = config.users.users.backups.name;
+    path = "${config.users.users.backups.home}/.ssh/config"; 
+  };
+  sops.secrets."ssh/backups/key" = {
+    mode = "0400";
+    owner = config.users.users.backups.name;
   };
 
   services.openssh = {
