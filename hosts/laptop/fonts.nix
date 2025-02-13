@@ -1,5 +1,7 @@
 { pkgs, ... }:
 {
+  environment.systemPackages = [ pkgs.fcitx5 ];
+
   # Enable IME
   i18n.inputMethod = {
     type = "fcitx5";
@@ -12,32 +14,12 @@
     };
   };
 
-  # Install fonts
   fonts.packages = with pkgs; [
     corefonts
-    noto-fonts
     noto-fonts-cjk-sans
     noto-fonts-emoji
     noto-fonts-extra
-    nerdfonts
+    nerd-fonts.hurmit
     ipafont
   ];
-
-  # Set default fonts
-  fonts.fontconfig.defaultFonts = {
-    monospace = [
-      "Hack Nerd Font"
-      "Noto Sans Mono CJK JP"
-    ];
-
-    sansSerif = [
-      "Noto Sans"
-      "Noto Sans CJK JP"
-    ];
-
-    serif = [
-      "Noto Serif"
-      "Noto Serif CJK JP"
-    ];
-  };
 }

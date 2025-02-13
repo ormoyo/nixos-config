@@ -16,7 +16,7 @@
     };
     font = {
       name = "Hurmit Nerd Font";
-      package = pkgs.nerdfonts;
+      package = pkgs.nerd-fonts.hurmit;
     };
     gtk2.extraConfig = "gtk-im-module=\"fcitx\"";
     gtk3.extraConfig.gtk-im-module = "fcitx";
@@ -24,7 +24,6 @@
   };
 
   home.packages = with pkgs; [
-    (nerdfonts.override { fonts = [ "FantasqueSansMono" "Hermit" ]; })
     inputs.hyprcursor-phinger.packages.${pkgs.system}.default
 
     hyprlock

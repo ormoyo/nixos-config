@@ -66,9 +66,9 @@ in
   programs.kitty = {
     enable = true;
     font = {
-      name = "Hermit";
+      name = "Hurmit Nerd Font";
       size = 10;
-      package = pkgs.nerdfonts;
+      package = pkgs.nerd-fonts.hurmit;
     };
   };
 
@@ -83,5 +83,27 @@ in
     Unit.Description = "Runs protonmail-bridge";
     Install.WantedBy = [ "default.target" ];
     Service.ExecStart = "${pkgs.protonmail-bridge}/bin/protonmail-bridge -n";
+  };
+
+  # Set default fonts
+  fonts.fontconfig.enable = true;
+  fonts.fontconfig.defaultFonts = {
+    monospace = [
+      "Hurmit Nerd Font"
+      "FreeSans"
+      "Noto Sans Mono CJK JP"
+    ];
+
+    sansSerif = [
+      "Hurmit Nerd Font"
+      "FreeSans"
+      "Noto Sans CJK JP"
+    ];
+
+    serif = [
+      "Hurmit Nerd Font"
+      "FreeSans"
+      "Noto Serif CJK JP"
+    ];
   };
 }
