@@ -4,7 +4,6 @@
     [
       ./fonts.nix
       ./graphics.nix
-      ./tools
       ./virtualization.nix
       ./build-machines.nix
     ];
@@ -69,5 +68,11 @@
     };
   };
 
+  programs.java = {
+    enable = true;
+    package = pkgs.openjdk17;
+  };
+
+  environment.systemPackages = [ pkgs.jetbrains-toolbox ];
   system.stateVersion = "23.11";
 }
