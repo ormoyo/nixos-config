@@ -10,7 +10,7 @@
     ];
   };
 
-  services.docker = {
+  services.containers = {
     enable = true;
     user = "ormoyo";
     backups = {
