@@ -1,10 +1,10 @@
-{ pkgs, lib, inputs, config, ... }:
+{ pkgs, lib, inputs, config, outputs, ... }:
 let
   inherit (lib) attrNames listToAttrs mapAttrs mkDefault mkIf nameValuePair optional;
   cfg = config.settings.home;
   users = map
     (name: nameValuePair name
-      (import ./home.nix { inherit config inputs pkgs lib; username = name; }))
+      (import ./home.nix { inherit config inputs pkgs lib outputs; username = name; }))
     (attrNames config.settings.common.users);
 in
 {
@@ -35,7 +35,7 @@ in
 
     home-manager = {
       extraSpecialArgs = { inherit inputs; };
-      backupFileExtension = "backupsgiojewtuieh";
+      backupFileExtension = "b421ackfaifiodasjup129214";
 
       useUserPackages = true;
       useGlobalPkgs = true;

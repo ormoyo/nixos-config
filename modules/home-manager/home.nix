@@ -1,4 +1,4 @@
-{ pkgs, inputs, username, config, lib, ... }:
+{ pkgs, inputs, username, config, lib, outputs, ... }:
 let
   gaming-pkgs = inputs.nix-gaming.packages.${pkgs.system};
 in
@@ -12,7 +12,7 @@ in
     ./desktop.nix
     ./shell.nix
     ./ssh.nix
-  ];
+  ] ++ outputs.home-manager.sharedModules;
 
   home.username = username;
   home.homeDirectory = "/home/${username}";

@@ -145,8 +145,10 @@
           system = system;
           specialArgs = {
             inherit inputs;
+            outputs = self.outputs;
             dockerPaths = [ ./modules/nixos/docker ];
           };
+
           modules = [
             { networking = { hostName = hostname; domain = domain; }; }
             { nixpkgs.overlays = overlays; }
