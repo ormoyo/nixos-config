@@ -251,11 +251,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1739416022,
-        "narHash": "sha256-Af1CIT+XlXEb+Dk11sgPDzJoOUiada2Xoj5hA8TBvLY=",
+        "lastModified": 1739456678,
+        "narHash": "sha256-nPAVyvE7rE6bheOyW1F8ngtMovqNxFmxaZaarSW9b9Y=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "c9d343cfa0565671cc7e8d5aefebaf61cc840abd",
+        "rev": "a70d788923061a00a488f60a01768ca4c6a8b727",
         "type": "github"
       },
       "original": {
@@ -886,11 +886,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1739447444,
-        "narHash": "sha256-utzFwVSyqTn7HwWkjepcy/lbA0wvdwZVca6w9GnKwzA=",
+        "lastModified": 1739458250,
+        "narHash": "sha256-3V8HmUTqsy8bykbLk429a18T2XBTD2vrtXPvY7/A1tc=",
         "owner": "ormoyo",
         "repo": "nix-docker-compose",
-        "rev": "284e8c59911478cd9a524cf0b4d5483fe62b9d88",
+        "rev": "b592cdc5d89b876bb066a4f6a26a396b9f53e2c3",
         "type": "github"
       },
       "original": {
