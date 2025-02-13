@@ -23,13 +23,13 @@ in
     (vesktop.override { withSystemVencord = false; })
     nil
 
-    ark
     cpupower-gui
     filelight
     gaming-pkgs.wine-ge
     gimp
     hakuneko
     jetbrains.idea-community-bin
+    kdePackages.ark
     keepassxc
     libreoffice
     mpv
@@ -85,5 +85,3 @@ in
     Service.ExecStart = "${pkgs.protonmail-bridge}/bin/protonmail-bridge -n";
   };
 }
-
-

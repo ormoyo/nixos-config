@@ -5,7 +5,9 @@
     age
     android-tools
     compsize
+    delta
     ethtool
+    fd
     git
     gitui
     hdparm
@@ -16,6 +18,7 @@
     openssl
     powertop
     ripgrep
+    sad
     sops
   ];
 
