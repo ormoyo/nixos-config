@@ -112,6 +112,10 @@
       url = "github:Infinidoge/nix-minecraft";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Other
     neovim-nightly-overlay = {
@@ -135,10 +139,11 @@
 
       domain = "pc.org";
       overlays = [
-        inputs.hyprland.overlays.default
-        inputs.nh.overlays.default
-        inputs.minecraft-server.overlay
         forgeServers
+        inputs.hyprland.overlays.default
+        inputs.minecraft-server.overlay
+        inputs.nh.overlays.default
+        inputs.rust-overlay.overlays.default
       ];
       mkSystem = { pkgs, hostname, enableHomeManager ? false }:
         pkgs.lib.nixosSystem {
@@ -168,7 +173,7 @@
         };
       forEachSupportedSystem = f: nixpkgs.lib.genAttrs (import systems) (system: f {
         pkgs = import nixpkgs {
-          inherit system;
+          inherit system overlays;
         };
       });
 

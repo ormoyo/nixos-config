@@ -1,28 +1,29 @@
 { pkgs ? import <nixpkgs> }:
-pkgs.mkShell {
+pkgs.mkShell rec {
   buildInputs = with pkgs; [
-    cargo
-    cargo-deny
-    cargo-edit
-    cargo-watch
-    clippy
+    alsa-lib
+    cargo-whatfeatures
     egl-wayland
     fontconfig
     freetype
     libGL
     libudev-zero
+    libxkbcommon
+    gtk3
     openssl
     pkg-config
     rust-analyzer
-    rustc
-    rustfmt
+    rust-bin.stable.latest.default
+    vulkan-loader
+    xorg.libX11
+    xorg.libX11.dev
+    xorg.libXcursor
+    xorg.libXi
+    zlib
     wayland
+    webkitgtk_4_1
   ];
-
-  LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
-    pkgs.libxkbcommon
-    pkgs.vulkan-loader
-  ];
+  LD_LIBRARY_PATH = "${pkgs.lib.makeLibraryPath buildInputs}";
 
   shellHook = ''
     alias ls=eza
