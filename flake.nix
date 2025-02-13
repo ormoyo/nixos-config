@@ -130,6 +130,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
     };
+    flatpaks = { 
+      url = "github:GermanBread/declarative-flatpak/stable-v3"; 
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
   };
 
   outputs = { self, nixpkgs, nixpkgs-stable, systems, ... }@inputs:
@@ -185,6 +190,7 @@
       home-manager.sharedModules = [
         inputs.hyprcursor-phinger.homeManagerModules.hyprcursor-phinger
         inputs.nix-index-database.hmModules.nix-index
+        inputs.flatpaks.homeManagerModules.declarative-flatpak
       ];
 
       nixosConfigurations.laptop = mkSystem {
