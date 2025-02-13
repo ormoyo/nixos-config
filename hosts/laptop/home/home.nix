@@ -21,6 +21,7 @@
       "desktop"
       "server"
       "soft-git"
+      "main-builder"
     ];
     keys = [
       "github1"
@@ -33,6 +34,8 @@
       "server2"
       "soft-git1"
       "soft-git2"
+      "main-builder1"
+      "main-builder2"
     ];
   };
 
@@ -62,4 +65,3 @@
     Service.ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
   };
 }
-

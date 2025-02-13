@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, ... }:
 {
   imports =
     [
@@ -6,6 +6,7 @@
       ./graphics.nix
       ./tools
       ./virtualization.nix
+      ./build-machines.nix
     ];
 
   services.logind.extraConfig = ''
