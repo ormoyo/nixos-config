@@ -24,7 +24,7 @@ in
       volumes = [
         "${path}/data:/data"
         "${path}/letsencrypt:/etc/letsencrypt"
-        "${config.services.docker.services.nextcloud.dataDir}/data:/var/www/html"
+        "${config.services.containers.services.nextcloud.dataDir}/data:/var/www/html"
       ];
     };
   };

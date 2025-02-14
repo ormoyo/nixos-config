@@ -156,7 +156,7 @@
           specialArgs = {
             inherit inputs;
             outputs = self.outputs;
-            dockerPaths = [ ./modules/nixos/docker ];
+            containerPaths = [ ./modules/nixos/docker ];
           };
 
           modules = [
