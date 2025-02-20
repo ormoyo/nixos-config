@@ -16,33 +16,30 @@
   boot.kernel.sysctl = { "vm.swappiness" = 40; };
   boot.supportedFilesystems = [ "ntfs" ];
 
-  fileSystems."/" =
-    {
-      device = "none";
-      fsType = "tmpfs";
-      options = [ "defaults" "size=50%" "mode=755" ];
-    };
+  fileSystems."/" = {
+    device = "none";
+    fsType = "tmpfs";
+    options = [ "defaults" "size=50%" "mode=755" ];
+  };
 
-  fileSystems."/nix/persist/system" =
-    {
-      device = "/dev/disk/by-uuid/02bdb867-4ea2-4ea0-8f38-aaf5cc265870";
-      fsType = "btrfs";
-      options = [ "subvol=@" "noatime" "compress-force=zstd" ];
-    };
+  fileSystems."/nix/persist" = {
+    neededForBoot = true;
+    device = "/dev/disk/by-uuid/02bdb867-4ea2-4ea0-8f38-aaf5cc265870";
+    fsType = "btrfs";
+    options = [ "subvol=@" "noatime" "compress-force=zstd" ];
+  };
 
-  fileSystems."/boot" =
-    {
-      device = "/dev/disk/by-uuid/0A0B-F81B";
-      fsType = "vfat";
-      options = [ "umask=0077" ];
-    };
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/0A0B-F81B";
+    fsType = "vfat";
+    options = [ "umask=0077" ];
+  };
 
-  fileSystems."/mnt/disk2" =
-    {
-      device = "/dev/disk/by-uuid/f597bcf2-0d98-456f-9890-4b39f1069c2d";
-      fsType = "btrfs";
-      options = [ "subvol=@" "noatime" "compress-force=zstd" "autodefrag" ];
-    };
+  fileSystems."/mnt/disk2" = {
+    device = "/dev/disk/by-uuid/f597bcf2-0d98-456f-9890-4b39f1069c2d";
+    fsType = "btrfs";
+    options = [ "subvol=@" "noatime" "compress-force=zstd" "autodefrag" ];
+  };
 
   swapDevices = [{
     device = "/var/swapfile";
@@ -58,4 +55,24 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
+  environment.persistence."/nix/persist" = {
+    hideMounts = true;
+    directories = [
+      "/var/log"
+      "/var/lib/systemd/coredump"
+      "/var/lib/nixos"
+      "/var/tmp"
+      "/etc/nixos"
+      "/etc/NetworkManager/system-connections"
+      "/opt/containers"
+    ];
+    files = [
+      # machine-id is used by systemd for the journal, if you don't persist this
+      # file you won't be able to easily use journalctl to look at journals for
+      # previous boots.
+      "/etc/machine-id"
+      "/etc/adjtime"
+    ];
+  };
 }
