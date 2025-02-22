@@ -22,6 +22,13 @@
     options = [ "defaults" "size=50%" "mode=755" ];
   };
 
+  fileSystems."/nix" = {
+    neededForBoot = true;
+    device = "/dev/disk/by-uuid/02bdb867-4ea2-4ea0-8f38-aaf5cc265870";
+    fsType = "btrfs";
+    options = [ "subvol=@nix" "noatime" "compress-force=zstd" ];
+  };
+
   fileSystems."/nix/persist" = {
     neededForBoot = true;
     device = "/dev/disk/by-uuid/02bdb867-4ea2-4ea0-8f38-aaf5cc265870";
