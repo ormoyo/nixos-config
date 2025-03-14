@@ -103,11 +103,10 @@ in
         "d ${user.home}/.ssh 0700 ${user.name} ${user.group}"
       ] ++
       (builtins.map (path: "A+ ${path} - - - - m::r-X,u:${user.name}:r-X")
-        (flatten (
-          mapAttrsToList
-            (name: value: cfg.repos.${name}.paths)
-            cfg.repos
-        )));
+        (cfg.repos
+        |> mapAttrsToList paths
+        |> flatten)
+      );
 
       sops.secrets = secrets;
       services.restic.backups = backups;
