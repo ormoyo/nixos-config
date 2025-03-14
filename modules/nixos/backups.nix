@@ -1,5 +1,5 @@
 { config, cfg, lib, ... }:
-let inherit (lib) concatMapAttrs flatten mapAttrs mapAttrsToList mkEnableOption mkIf mkOption optionals types;
+let inherit (lib) concatMapAttrs flatten mapAttrs mapAttrsToList mkEnableOption mkIf mkOption optionals removeSuffix types;
   defaultExcludePatterns = [
     ".git"
     "tmp"
@@ -99,14 +99,20 @@ in
         group = "backups";
       };
 
-      systemd.tmpfiles.rules = [
-        "d ${user.home}/.ssh 0700 ${user.name} ${user.group}"
-      ] ++
-      (builtins.map (path: "A+ ${path} - - - - m::r-X,u:${user.name}:r-X")
+      systemd.tmpfiles.rules =  
+        let   
+          repoPaths = name: repo: 
+            repo.paths 
+            ++ repo.paths
+               |> map (removeSuffix "/")
+               |> map builtins.dirOf;
+        in  [
+          "d ${user.home}/.ssh 0700 ${user.name} ${user.group}"
+        ] ++
         (cfg.repos
-        |> mapAttrsToList paths
-        |> flatten)
-      );
+          |> mapAttrsToList repoPaths
+          |> flatten
+          |> builtins.map (path: "A+ ${path} - - - - m::r-X,u:${user.name}:r-X"));
 
       sops.secrets = secrets;
       services.restic.backups = backups;
