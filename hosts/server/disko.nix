@@ -1,5 +1,5 @@
 { device ? throw "Set this to your disk device, e.g. /dev/disk/by-id/<disk-id>"
-, otherDisks ? [], lib, ... }:
+, otherDisks ? [], lib ? (import <nixpkgs> {}).lib, ... }:
 let
   inherit (lib) nameValuePair;
   genAttrs = f: names: builtins.listToAttrs (map (n: f n) names);
