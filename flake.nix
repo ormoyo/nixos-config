@@ -136,6 +136,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+    disko = { 
+      url = "github:nix-community/disko/latest";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, nixpkgs-stable, systems, ... }@inputs:
@@ -172,6 +176,7 @@
             inputs.nix-docker-compose.nixosModules.nix-docker-compose
             inputs.nix-index-database.nixosModules.nix-index
             inputs.impermanence.nixosModules.impermanence
+            inputs.disko.nixosModules.disko
           ] ++ nixpkgs.lib.optionals enableHomeManager
             [
               ./modules/home-manager
