@@ -58,4 +58,26 @@
     ''
       ${pkgs.hdparm}/sbin/hdparm -B 128 -S 180 /dev/disk/by-uuid/f597bcf2-0d98-456f-9890-4b39f1069c2d
     '';
+
+  fileSystems."/nix/persist".neededForBoot = true;
+  environment.persistence."/nix/persist" = {
+    hideMounts = true;
+    directories = [
+      "/var/log"
+      "/var/lib/systemd/coredump"
+      "/var/lib/nixos"
+      "/var/lib/sops-nix"
+      "/var/tmp"
+      "/etc/nixos"
+      "/etc/NetworkManager/system-connections"
+      "/opt/containers"
+    ];
+    files = [
+      # machine-id is used by systemd for the journal, if you don't persist this
+      # file you won't be able to easily use journalctl to look at journals for
+      # previous boots.
+      "/etc/machine-id"
+      "/etc/adjtime"
+    ];
+  };
 }
