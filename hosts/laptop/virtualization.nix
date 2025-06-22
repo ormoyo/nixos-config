@@ -16,7 +16,6 @@
     };
   };
 
-  virtualisation.waydroid.enable = true;
   virtualisation.podman.enable = true;
   programs.virt-manager.enable = true;
 
