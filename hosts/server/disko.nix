@@ -21,21 +21,19 @@ let
     let name = builtins.baseNameOf dev;
     in nameValuePair "${name}_vg" {
       type = "lvm_vg";
-      content = {
-        lvs = {
-          main = {
-            size = "100%FREE";
-            content = {
-              type = "btrfs";
-              subvolumes = {
-                "/@" = {
-                  mountpoint = "/mnt/${name}";
-                  mountOptions = [ "compress=zstd" "noatime" ];
-                };
-                "/@snapshots" = {
-                  mountpoint = "/mnt/${name}/.snapshots";
-                  mountOptions = [ "compress=zstd" "noatime" ];
-                };
+      lvs = {
+        main = {
+          size = "100%FREE";
+          content = {
+            type = "btrfs";
+            subvolumes = {
+              "/@" = {
+                mountpoint = "/mnt/${name}";
+                mountOptions = [ "compress=zstd" "noatime" ];
+              };
+              "/@snapshots" = {
+                mountpoint = "/mnt/${name}/.snapshots";
+                mountOptions = [ "compress=zstd" "noatime" ];
               };
             };
           };
