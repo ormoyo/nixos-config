@@ -108,7 +108,7 @@ in {
     nodev = {
       "/" = {
         fsType = "tmpfs";
-        mountOptions = [ "size=30%" ];
+        mountOptions = [ "defaults" "size=30%" "mode=755" ];
       };
     };
   };
