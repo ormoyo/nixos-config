@@ -197,7 +197,6 @@
       home-manager.sharedModules = [
         inputs.hyprcursor-phinger.homeManagerModules.hyprcursor-phinger
         inputs.nix-index-database.hmModules.nix-index
-        inputs.flatpaks.homeManagerModules.declarative-flatpak
       ];
 
       nixosConfigurations.laptop = mkSystem {

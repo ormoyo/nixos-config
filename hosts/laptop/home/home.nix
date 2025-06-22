@@ -7,12 +7,6 @@
     flatpak
   ];
 
-  services.flatpak.enableModule = true;
-  services.flatpak.remotes = {
-    "flathub" = "https://dl.flathub.org/repo/flathub.flatpakrepo";
-    "flathub-beta" = "https://dl.flathub.org/beta-repo/flathub-beta.flatpakrepo";
-  };
-  services.flatpak.packages = [ "flathub:app/org.kde.subtitlecomposer//stable"];
 
   dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {
