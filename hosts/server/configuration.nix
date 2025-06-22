@@ -63,6 +63,8 @@
       ${pkgs.hdparm}/sbin/hdparm -B 128 -S 180 /dev/disk/by-uuid/f597bcf2-0d98-456f-9890-4b39f1069c2d
     '';
 
+  sops.age.keyFile = "/nix/persist/var/lib/sops-nix/key.txt";
+
   fileSystems."/nix/persist".neededForBoot = true;
   environment.persistence."/nix/persist" = {
     hideMounts = true;
