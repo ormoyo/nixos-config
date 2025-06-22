@@ -13,6 +13,7 @@
     ];
   };
 
+  security.sudo.extraConfig = "Defaults lecture = never";
   services.containers = {
     enable = true;
     user = "ormoyo";
