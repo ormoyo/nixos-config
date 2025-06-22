@@ -82,6 +82,8 @@
       # previous boots.
       "/etc/machine-id"
       "/etc/adjtime"
+      "/etc/ssh/ssh_host_ed25519_key"
+      "/etc/ssh/ssh_host_rsa_key"
     ];
   };
 }
