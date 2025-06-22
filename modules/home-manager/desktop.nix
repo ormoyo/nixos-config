@@ -42,7 +42,7 @@
     libsForQt5.qt5ct
     nordic
     pamixer
-    polkit-kde-agent
+    kdePackages.polkit-kde-agent-1
     qt6Packages.qt6ct
     rofi-wayland
     swww

@@ -24,7 +24,7 @@ in
     nil
 
     cpupower-gui
-    filelight
+    kdePackages.filelight
     gaming-pkgs.wine-ge
     gimp
     hakuneko
