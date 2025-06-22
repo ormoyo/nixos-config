@@ -1,7 +1,11 @@
 { pkgs, config, lib, ... }:
 {
   imports = [
-    (import ./disko.nix { device = "/dev/sdc"; inherit lib; })
+    (import ./disko.nix { 
+      inherit lib;
+      device = "/dev/sdc";
+      otherDisks = [ "/dev/sda" "/dev/sdb" ];
+    })
   ];
   networking.interfaces.enp1s0.wakeOnLan.enable = true;
   users.users.ormoyo = {
