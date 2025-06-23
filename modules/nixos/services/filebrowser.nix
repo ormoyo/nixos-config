@@ -6,7 +6,7 @@ let
 in {
   options.custom.services.filebrowser = {
     package = mkOption {
-      type = types.str;
+      type = types.package;
       default = pkgs.filebrowser;
     };
 
