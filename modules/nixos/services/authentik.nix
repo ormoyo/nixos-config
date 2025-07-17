@@ -6,14 +6,14 @@ in {
   config = mkIf (cfg.enable && cfg.authentik.enable) {
     sops.secrets."services/authentik/secret-key" = { mode = "0400"; };
     sops.templates."authentik-env".content = ''
-      AUTHENTIK_SECRET_KEY=${config.sops.placeholder."authentik/secret-key"}
+      AUTHENTIK_SECRET_KEY=${config.sops.placeholder."services/authentik/secret-key"}
     '';
 
     containers.authentik =
     let
       subnet = containerAddress 
         |> splitString "."
-        |> sublist ((builtins.stringLength containerAddress) - 1)
+        |> sublist 0 3
         |> concatStringsSep ".";
     in {
       autoStart = true;

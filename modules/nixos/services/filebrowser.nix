@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, port, ... }:
 let
   inherit (lib) concatStringsSep mkIf mkOption types;
   cfg = config.custom.services;
@@ -28,7 +28,7 @@ in {
           };
 
           port = lib.mkOption {
-            default = 8080;
+            default = port;
             description = ''
               The port to listen on.
             '';
