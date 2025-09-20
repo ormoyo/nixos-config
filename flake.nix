@@ -77,10 +77,6 @@
     };
 
     # Nixos addons
-    nh = {
-      url = "github:viperML/nh";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nil = {
       url = "github:oxalica/nil";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -146,7 +142,6 @@
         forgeServers
         inputs.hyprland.overlays.default
         inputs.minecraft-server.overlay
-        inputs.nh.overlays.default
         inputs.rust-overlay.overlays.default
       ];
       mkSystem = { pkgs, hostname, enableHomeManager ? false }:
