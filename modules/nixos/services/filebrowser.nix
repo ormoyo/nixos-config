@@ -129,7 +129,7 @@ in {
         "storage.${cfg.domain}" = {
           forceSSL = cfg.filebrowser.forceSSL;
           enableACME = !cfg.filebrowser.disableACME;
-          locations."/" = { proxyPass = "http://localhost:${cfg.filebrowser.settings.port}"; };
+          locations."/" = { proxyPass = "http://localhost:${toString cfg.filebrowser.settings.port}"; };
         };
       };
     };

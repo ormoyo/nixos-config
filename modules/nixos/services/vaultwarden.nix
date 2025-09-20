@@ -12,7 +12,7 @@ in
 
     services.vaultwarden = {
       enable = true;
-      environmentFile = config.sops."vaultwarden-env".path;
+      environmentFile = config.sops.templates."vaultwarden-env".path;
       config = {
         DOMAIN = "https://vault.${cfg.domain}";
         SIGNUPS_ALLOWED = false;
@@ -27,7 +27,7 @@ in
         forceSSL = cfg.vaultwarden.forceSSL;
         enableACME = !cfg.vaultwarden.disableACME;
         locations."/" = {
-          proxyPass = "http://localhost:${config.services.vaultwarden.config.ROCKET_PORT}";
+          proxyPass = "http://localhost:${toString config.services.vaultwarden.config.ROCKET_PORT}";
           proxyWebsockets = true;
         };
       };
