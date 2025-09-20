@@ -103,12 +103,6 @@
       inputs.hercules-ci-effects.follows = "hercules-ci-effects";
     };
     impermanence.url = "github:nix-community/impermanence";
-
-    nix-docker-compose = {
-      url = "github:ormoyo/nix-docker-compose";
-      inputs.arion.follows = "arion";
-    };
-
     minecraft-server = {
       url = "github:Infinidoge/nix-minecraft";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -173,7 +167,6 @@
             ./modules/nixos
 
             inputs.minecraft-server.nixosModules.minecraft-servers
-            inputs.nix-docker-compose.nixosModules.nix-docker-compose
             inputs.nix-index-database.nixosModules.nix-index
             inputs.impermanence.nixosModules.impermanence
             inputs.disko.nixosModules.disko
