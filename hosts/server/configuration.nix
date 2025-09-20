@@ -62,9 +62,7 @@
     hideMounts = true;
     directories = [
       "/var/log"
-      "/var/lib/systemd/coredump"
-      "/var/lib/nixos"
-      "/var/lib/sops-nix"
+      "/var/lib"
       "/var/tmp"
       "/etc/nixos"
       "/etc/NetworkManager/system-connections"
