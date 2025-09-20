@@ -3,6 +3,8 @@ let
   inherit (lib) concatMapAttrs filterAttrs imap0 mapAttrs' mkEnableOption mkIf mkOption nameValuePair remove removeSuffix types;
   cfg = config.custom.services;
   port = 31575;
+  containersSubnet = "172.161.10";
+  containerAddrLast = 2;
   services = builtins.readDir ./.
     |> mapAttrs' (n: v:
       nameValuePair (removeSuffix ".nix" n) {
@@ -23,6 +25,7 @@ in {
     |> imap0 (i: name: import ./${name}.nix {
       inherit config lib pkgs;
       port = port + i;
+      containerAddress = "${containersSubnet}.${containerAddrLast + i}";
     });
 
   options.custom.services = {
