@@ -1,7 +1,8 @@
-{ lib, config, ... }:
+{ lib, config, pkgs, ... }:
 let
-  inherit (lib) concatMapAttrs filterAttrs mapAttrs' mkEnableOption mkIf mkOption nameValuePair remove removeSuffix types;
+  inherit (lib) concatMapAttrs filterAttrs imap0 mapAttrs' mkEnableOption mkIf mkOption nameValuePair remove removeSuffix types;
   cfg = config.custom.services;
+  port = 31575;
   services = builtins.readDir ./.
     |> mapAttrs' (n: v:
       nameValuePair (removeSuffix ".nix" n) {
@@ -19,7 +20,10 @@ let
 in {
   imports = services
     |> builtins.attrNames
-    |> map (name: ./${name}.nix);
+    |> imap0 (i: name: import ./${name}.nix {
+      inherit config lib pkgs;
+      port = port + i;
+    });
 
   options.custom.services = {
     enable = mkEnableOption "custom services";
