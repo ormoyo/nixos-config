@@ -33,7 +33,6 @@
     settings.PasswordAuthentication = false;
   };
 
-  networking.firewall.allowedTCPPorts = [ 443 81 ];
   services.minecraft-servers = {
     enable = true;
     eula = true;
