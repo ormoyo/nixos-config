@@ -11,11 +11,11 @@ let
         enable = mkEnableOption "${n} service";
         forceSSL = mkOption {
           type = types.bool;
-          default = true;
+          default = config.custom.services.defaults.forceSSL;
         };
         disableACME = mkOption {
           type = types.bool;
-          default = false;
+          default = config.custom.services.defaults.disableACME;
         };
       })
     |> filterAttrs (n: v: n != "default");
@@ -33,6 +33,22 @@ in {
     hostname = mkOption { type = types.str; };
     domain = mkOption { type = types.str; };
     provider = mkOption { type = types.str; };
+    defaults = mkOption {
+      type = types.subvolume {
+        options = {
+          enabled = mkEnableOption "all services";
+          forceSSL = mkOption {
+            type = types.bool;
+            default = config.custom.services.provider != "cloudflare";
+          };
+          disableACME = mkOption {
+            type = types.bool;
+            default = false;
+          };
+        };
+      }; 
+      default = {};
+    };
   } // services;
 
   config = mkIf cfg.enable {
