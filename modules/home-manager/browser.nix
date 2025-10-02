@@ -19,12 +19,10 @@
     };
   };
 
-  home.packages = [ pkgs.firefoxpwa pkgs.ungoogled-chromium ];
+  home.packages = [ pkgs.ungoogled-chromium ];
   programs.firefox = {
     enable = true;
-    package = (pkgs.librewolf.override {
-      nativeMessagingHosts = [ pkgs.firefoxpwa ];
-    });
+    package = pkgs.librewolf;
 
     policies.DisableFirefoxAccounts = false;
     profiles.default = {
