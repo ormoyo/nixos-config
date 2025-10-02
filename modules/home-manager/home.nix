@@ -34,17 +34,15 @@ in
     libreoffice
     mpv
     networkmanagerapplet
-    nheko
+    # nheko
     nwg-look
     pavucontrol
-    planify
-    prismlauncher
+    # planify
     protonmail-bridge
     qalculate-gtk
     qbittorrent
     qpwgraph
-    stremio
-    thunderbird
+    # thunderbird
     trashy
     virtiofsd
     vlc
