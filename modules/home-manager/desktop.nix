@@ -7,7 +7,6 @@
   };
 
 
-  fonts.fontconfig.enable = true;
   gtk = {
     enable = true;
     theme = {
@@ -24,13 +23,7 @@
   };
 
   home.packages = with pkgs; [
-    inputs.hyprcursor-phinger.packages.${pkgs.system}.default
-
-    hyprlock
-    hypridle
-    hyprpicker
-
-    protonup-qt
+    # protonup-qt
 
     appimage-run
     blueberry
@@ -38,16 +31,15 @@
     nemo
     cliphist
     dunst
-    hyprshot
     libsForQt5.qt5ct
     nordic
     pamixer
     kdePackages.polkit-kde-agent-1
     qt6Packages.qt6ct
-    rofi-wayland
+    # rofi
     swww
-    waybar
-    waypaper
+    # waybar
+    # waypaper
     xdg-desktop-portal-gtk
     xdg-desktop-portal-wlr
     ydotool
