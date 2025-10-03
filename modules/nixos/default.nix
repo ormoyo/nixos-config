@@ -6,5 +6,6 @@ in
   imports = [
     (importModule ./common config.settings.common)
     (importModule ./backups.nix config.services.backups)
+    ./services
   ];
 }

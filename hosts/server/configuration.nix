@@ -18,25 +18,13 @@
   };
 
   security.sudo.extraConfig = "Defaults lecture = never";
-  services.containers = {
+  custom.services = {
     enable = true;
-    user = "ormoyo";
-    backups = {
-      enable = true;
-      time = "Mon,Sat 02:05";
-    };
-    services = {
-      palworld.autoStart = false;
-    };
-  };
-  sops.secrets."ssh/backups/config" = {
-    mode = "0400";
-    owner = config.users.users.backups.name;
-    path = "${config.users.users.backups.home}/.ssh/config"; 
-  };
-  sops.secrets."ssh/backups/key" = {
-    mode = "0400";
-    owner = config.users.users.backups.name;
+    domain = "amoyal.org";
+    hostname = "acme+admin";
+    provider = "cloudflare";
+
+    defaults.enabled = true;
   };
 
   services.openssh = {
@@ -44,7 +32,6 @@
     settings.PasswordAuthentication = false;
   };
 
-  networking.firewall.allowedTCPPorts = [ 443 81 ];
   services.minecraft-servers = {
     enable = true;
     eula = true;
@@ -74,9 +61,7 @@
     hideMounts = true;
     directories = [
       "/var/log"
-      "/var/lib/systemd/coredump"
-      "/var/lib/nixos"
-      "/var/lib/sops-nix"
+      "/var/lib"
       "/var/tmp"
       "/etc/nixos"
       "/etc/NetworkManager/system-connections"

@@ -77,10 +77,6 @@
     };
 
     # Nixos addons
-    nh = {
-      url = "github:viperML/nh";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nil = {
       url = "github:oxalica/nil";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -103,12 +99,6 @@
       inputs.hercules-ci-effects.follows = "hercules-ci-effects";
     };
     impermanence.url = "github:nix-community/impermanence";
-
-    nix-docker-compose = {
-      url = "github:ormoyo/nix-docker-compose";
-      inputs.arion.follows = "arion";
-    };
-
     minecraft-server = {
       url = "github:Infinidoge/nix-minecraft";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -152,7 +142,6 @@
         forgeServers
         inputs.hyprland.overlays.default
         inputs.minecraft-server.overlay
-        inputs.nh.overlays.default
         inputs.rust-overlay.overlays.default
       ];
       mkSystem = { pkgs, hostname, enableHomeManager ? false }:
@@ -173,7 +162,6 @@
             ./modules/nixos
 
             inputs.minecraft-server.nixosModules.minecraft-servers
-            inputs.nix-docker-compose.nixosModules.nix-docker-compose
             inputs.nix-index-database.nixosModules.nix-index
             inputs.impermanence.nixosModules.impermanence
             inputs.disko.nixosModules.disko
