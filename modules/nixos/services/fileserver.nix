@@ -10,7 +10,7 @@ in
         forceSSL = cfg.fileserver.forceSSL;
         enableACME = !cfg.fileserver.disableACME;
 
-        locations."/".root = "/var/lib/public";
+        locations."/".root = "/srv/public";
       };
     };
   };
