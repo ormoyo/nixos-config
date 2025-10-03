@@ -36,7 +36,7 @@ in {
     defaults = mkOption {
       type = types.subvolume {
         options = {
-          enabled = mkEnableOption "all services";
+          enable = mkEnableOption "all services";
           forceSSL = mkOption {
             type = types.bool;
             default = config.custom.services.provider != "cloudflare";
