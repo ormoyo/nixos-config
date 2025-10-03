@@ -60,6 +60,7 @@
   environment.persistence."/nix/persist" = {
     hideMounts = true;
     directories = [
+      "/srv"
       "/var/log"
       "/var/lib"
       "/var/tmp"
