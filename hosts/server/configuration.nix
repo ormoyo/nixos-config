@@ -24,7 +24,7 @@
     hostname = "acme+admin";
     provider = "cloudflare";
 
-    defaults.enabled = true;
+    defaults.enable = true;
   };
 
   services.openssh = {

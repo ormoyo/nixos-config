@@ -34,7 +34,7 @@ in {
     domain = mkOption { type = types.str; };
     provider = mkOption { type = types.str; };
     defaults = mkOption {
-      type = types.subvolume {
+      type = types.submodule {
         options = {
           enable = mkEnableOption "all services";
           forceSSL = mkOption {
