@@ -891,26 +891,6 @@
         "type": "github"
       }
     },
-    "nix-docker-compose": {
-      "inputs": {
-        "arion": [
-          "arion"
-        ]
-      },
-      "locked": {
-        "lastModified": 1750602800,
-        "narHash": "sha256-NFAnNbUNBgUzS5ETTaun0bx9zS7Miqw2tdD/H3HvSv8=",
-        "owner": "ormoyo",
-        "repo": "nix-docker-compose",
-        "rev": "d16b912263463d01ddc7f715402ddd8b7955c0b8",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ormoyo",
-        "repo": "nix-docker-compose",
-        "type": "github"
-      }
-    },
     "nix-gaming": {
       "inputs": {
         "flake-parts": [
@@ -1007,7 +987,6 @@
         "minecraft-server": "minecraft-server",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
         "nil": "nil",
-        "nix-docker-compose": "nix-docker-compose",
         "nix-gaming": "nix-gaming",
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs",
