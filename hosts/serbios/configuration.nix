@@ -26,5 +26,28 @@
     };
   };
   
+  sops.age.keyFile = "/nix/persist/var/lib/sops-nix/key.txt";
+
+  fileSystems."/nix/persist".neededForBoot = true;
+  environment.persistence."/nix/persist" = {
+    hideMounts = true;
+    directories = [
+      "/var/log"
+      "/var/lib"
+      "/var/tmp"
+      "/etc/nixos"
+      "/etc/NetworkManager/system-connections"
+      "/opt/containers"
+    ];
+    files = [
+      # machine-id is used by systemd for the journal, if you don't persist this
+      # file you won't be able to easily use journalctl to look at journals for
+      # previous boots.
+      "/etc/machine-id"
+      "/etc/adjtime"
+      "/etc/ssh/ssh_host_ed25519_key"
+      "/etc/ssh/ssh_host_rsa_key"
+    ];
+  };
   system.stateVersion = "25.11";
 }
