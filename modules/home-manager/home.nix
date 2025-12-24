@@ -25,26 +25,22 @@ in
 
     cpupower-gui
     kdePackages.filelight
-    gaming-pkgs.wine-ge
     gimp
     hakuneko
-    jetbrains.idea-community-bin
     kdePackages.ark
     keepassxc
     libreoffice
     mpv
     networkmanagerapplet
-    nheko
+    # nheko
     nwg-look
     pavucontrol
-    planify
-    prismlauncher
+    # planify
     protonmail-bridge
     qalculate-gtk
     qbittorrent
     qpwgraph
-    stremio
-    thunderbird
+    # thunderbird
     trashy
     virtiofsd
     vlc

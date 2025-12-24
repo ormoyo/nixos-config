@@ -8,10 +8,9 @@
       ./build-machines.nix
     ];
 
-  services.logind.extraConfig = ''
-    HandlePowerKey=hibernate
-    HandleLidSwitch=hibernate
-  '';
+  services.logind.settings.Login = {
+    HandleLidSwitch = "hibernate";
+  };
 
   services.power-profiles-daemon.enable = false;
   services.thermald.enable = true;
@@ -73,6 +72,5 @@
     package = pkgs.openjdk17;
   };
 
-  environment.systemPackages = [ pkgs.jetbrains-toolbox ];
   system.stateVersion = "23.11";
 }
