@@ -198,6 +198,12 @@
         pkgs = nixpkgs-stable;
       };
 
+      nixosConfigurations.serbios = mkSystem {
+        hostname = "serbios";
+        pkgs = nixpkgs;
+        enableHomeManager = true;
+      };
+
       devShells = forEachSupportedSystem ({ pkgs }: shells pkgs);
     };
 }
