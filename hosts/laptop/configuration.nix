@@ -72,6 +72,5 @@
     package = pkgs.openjdk17;
   };
 
-  environment.systemPackages = [ pkgs.jetbrains-toolbox ];
   system.stateVersion = "23.11";
 }
