@@ -25,10 +25,8 @@ in
 
     cpupower-gui
     kdePackages.filelight
-    gaming-pkgs.wine-ge
     gimp
     hakuneko
-    jetbrains.idea-community-bin
     kdePackages.ark
     keepassxc
     libreoffice
