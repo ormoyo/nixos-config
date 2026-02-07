@@ -6,10 +6,8 @@ creation_rules:
     key_groups:
     - age:
       - *laptop
-      - *server
 
   - path_regex: secrets/server.yaml$
     key_groups:
     - age:
-      - *laptop
       - *server

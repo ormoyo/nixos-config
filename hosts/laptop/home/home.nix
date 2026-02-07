@@ -1,29 +1,44 @@
 { pkgs, inputs, ... }:
-let
-  gaming-pkgs = inputs.nix-gaming.packages.${pkgs.system};
-in
 {
-  imports = [
-    # inputs.nix-flatpak.homeManagerModules.default
-    ./desktop.nix
-    ./browser.nix
-    ./shell.nix
-  ];
-
   home.stateVersion = "23.11";
   home.packages = with pkgs; [
-    (vesktop.override { withSystemVencord = false; })
-
     moonlight-qt
-    subtitlecomposer
     youtube-music
+    flatpak
   ];
+
 
   dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {
       autoconnect = [ "qemu:///system" ];
       uris = [ "qemu:///system" ];
     };
+  };
+
+  programs.ssh = {
+    enable = true;
+    configs = [
+      "github"
+      "router"
+      "desktop"
+      "server"
+      "soft-git"
+      "main-builder"
+    ];
+    keys = [
+      "github1"
+      "github2"
+      "router1"
+      "router2"
+      "pc1"
+      "pc2"
+      "server1"
+      "server2"
+      "soft-git1"
+      "soft-git2"
+      "main-builder1"
+      "main-builder2"
+    ];
   };
 
 
@@ -52,4 +67,3 @@ in
     Service.ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
   };
 }
-
